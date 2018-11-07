@@ -18,7 +18,6 @@
 		114674FD219215E10034A7FF /* UINavigationController+Completion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674FC219215E10034A7FF /* UINavigationController+Completion.swift */; };
 		114674FF219215E60034A7FF /* StandartRouting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674FE219215E60034A7FF /* StandartRouting.swift */; };
 		11467502219216D70034A7FF /* When.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11467501219216D70034A7FF /* When.framework */; };
-		1146750421921B0B0034A7FF /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1146750321921B0B0034A7FF /* RxSwift.framework */; };
 		11467507219224C00034A7FF /* Routing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11467506219224C00034A7FF /* Routing.swift */; };
 		11467509219225400034A7FF /* RoutingEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11467508219225400034A7FF /* RoutingEvent.swift */; };
 		11469A5F2193400000378B6A /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11469A5E2193400000378B6A /* Event.swift */; };
@@ -56,7 +55,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				11467502219216D70034A7FF /* When.framework in Frameworks */,
-				1146750421921B0B0034A7FF /* RxSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
