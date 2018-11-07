@@ -7,17 +7,60 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		114674ED219215200034A7FF /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674EC219215200034A7FF /* Store.swift */; };
+		114674EF219215720034A7FF /* Store+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674EE219215720034A7FF /* Store+Rx.swift */; };
+		114674F1219215A50034A7FF /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674F0219215A50034A7FF /* Notification.swift */; };
+		114674F3219215AC0034A7FF /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674F2219215AC0034A7FF /* Action.swift */; };
+		114674F5219215B50034A7FF /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674F4219215B50034A7FF /* Result.swift */; };
+		114674F7219215BC0034A7FF /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674F6219215BC0034A7FF /* Promise.swift */; };
+		114674F9219215D00034A7FF /* StandartExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674F8219215D00034A7FF /* StandartExecutor.swift */; };
+		114674FB219215DA0034A7FF /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674FA219215DA0034A7FF /* Router.swift */; };
+		114674FD219215E10034A7FF /* UINavigationController+Completion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674FC219215E10034A7FF /* UINavigationController+Completion.swift */; };
+		114674FF219215E60034A7FF /* StandartRouting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674FE219215E60034A7FF /* StandartRouting.swift */; };
+		11467502219216D70034A7FF /* When.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11467501219216D70034A7FF /* When.framework */; };
+		1146750421921B0B0034A7FF /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1146750321921B0B0034A7FF /* RxSwift.framework */; };
+		11467507219224C00034A7FF /* Routing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11467506219224C00034A7FF /* Routing.swift */; };
+		11467509219225400034A7FF /* RoutingEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11467508219225400034A7FF /* RoutingEvent.swift */; };
+		11469A5F2193400000378B6A /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11469A5E2193400000378B6A /* Event.swift */; };
 		11581880218DDDF2001491B6 /* ReStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 1158187E218DDDF2001491B6 /* ReStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1158188F218DDE87001491B6 /* ReStoreRouter.h in Headers */ = {isa = PBXBuildFile; fileRef = 1158188D218DDE87001491B6 /* ReStoreRouter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		114674EC219215200034A7FF /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
+		114674EE219215720034A7FF /* Store+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Store+Rx.swift"; sourceTree = "<group>"; };
+		114674F0219215A50034A7FF /* Notification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
+		114674F2219215AC0034A7FF /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
+		114674F4219215B50034A7FF /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
+		114674F6219215BC0034A7FF /* Promise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
+		114674F8219215D00034A7FF /* StandartExecutor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandartExecutor.swift; sourceTree = "<group>"; };
+		114674FA219215DA0034A7FF /* Router.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
+		114674FC219215E10034A7FF /* UINavigationController+Completion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Completion.swift"; sourceTree = "<group>"; };
+		114674FE219215E60034A7FF /* StandartRouting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandartRouting.swift; sourceTree = "<group>"; };
+		11467501219216D70034A7FF /* When.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = When.framework; path = Carthage/Build/iOS/When.framework; sourceTree = "<group>"; };
+		1146750321921B0B0034A7FF /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
+		11467506219224C00034A7FF /* Routing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Routing.swift; sourceTree = "<group>"; };
+		11467508219225400034A7FF /* RoutingEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutingEvent.swift; sourceTree = "<group>"; };
+		11469A5E2193400000378B6A /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		1158187B218DDDF2001491B6 /* ReStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ReStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1158187E218DDDF2001491B6 /* ReStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReStore.h; sourceTree = "<group>"; };
 		1158187F218DDDF2001491B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1158188B218DDE87001491B6 /* ReStoreRouter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ReStoreRouter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1158188D218DDE87001491B6 /* ReStoreRouter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReStoreRouter.h; sourceTree = "<group>"; };
+		1158188E218DDE87001491B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		11581878218DDDF2001491B6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				11467502219216D70034A7FF /* When.framework in Frameworks */,
+				1146750421921B0B0034A7FF /* RxSwift.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		11581888218DDE87001491B6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -27,11 +70,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		11467500219216D70034A7FF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1146750321921B0B0034A7FF /* RxSwift.framework */,
+				11467501219216D70034A7FF /* When.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		11469A542193104100378B6A /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				114674F6219215BC0034A7FF /* Promise.swift */,
+				114674F4219215B50034A7FF /* Result.swift */,
+				114674EE219215720034A7FF /* Store+Rx.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		11581871218DDDF2001491B6 = {
 			isa = PBXGroup;
 			children = (
 				1158187D218DDDF2001491B6 /* ReStore */,
+				1158188C218DDE87001491B6 /* ReStoreRouter */,
 				1158187C218DDDF2001491B6 /* Products */,
+				11467500219216D70034A7FF /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -39,6 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				1158187B218DDDF2001491B6 /* ReStore.framework */,
+				1158188B218DDE87001491B6 /* ReStoreRouter.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -46,10 +111,30 @@
 		1158187D218DDDF2001491B6 /* ReStore */ = {
 			isa = PBXGroup;
 			children = (
+				114674EC219215200034A7FF /* Store.swift */,
+				114674F2219215AC0034A7FF /* Action.swift */,
+				11469A5E2193400000378B6A /* Event.swift */,
+				114674F0219215A50034A7FF /* Notification.swift */,
+				114674F8219215D00034A7FF /* StandartExecutor.swift */,
+				11469A542193104100378B6A /* Extensions */,
 				1158187E218DDDF2001491B6 /* ReStore.h */,
 				1158187F218DDDF2001491B6 /* Info.plist */,
 			);
 			path = ReStore;
+			sourceTree = "<group>";
+		};
+		1158188C218DDE87001491B6 /* ReStoreRouter */ = {
+			isa = PBXGroup;
+			children = (
+				1158188D218DDE87001491B6 /* ReStoreRouter.h */,
+				114674FA219215DA0034A7FF /* Router.swift */,
+				11467506219224C00034A7FF /* Routing.swift */,
+				11467508219225400034A7FF /* RoutingEvent.swift */,
+				114674FE219215E60034A7FF /* StandartRouting.swift */,
+				114674FC219215E10034A7FF /* UINavigationController+Completion.swift */,
+				1158188E218DDE87001491B6 /* Info.plist */,
+			);
+			path = ReStoreRouter;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -60,6 +145,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				11581880218DDDF2001491B6 /* ReStore.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		11581886218DDE87001491B6 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1158188F218DDE87001491B6 /* ReStoreRouter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +177,24 @@
 			productReference = 1158187B218DDDF2001491B6 /* ReStore.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		1158188A218DDE87001491B6 /* ReStoreRouter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 11581892218DDE87001491B6 /* Build configuration list for PBXNativeTarget "ReStoreRouter" */;
+			buildPhases = (
+				11581886218DDE87001491B6 /* Headers */,
+				11581887218DDE87001491B6 /* Sources */,
+				11581888218DDE87001491B6 /* Frameworks */,
+				11581889218DDE87001491B6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ReStoreRouter;
+			productName = ReStoreRouter;
+			productReference = 1158188B218DDE87001491B6 /* ReStoreRouter.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -94,6 +205,9 @@
 				ORGANIZATIONNAME = "Alexander Naumov";
 				TargetAttributes = {
 					1158187A218DDDF2001491B6 = {
+						CreatedOnToolsVersion = 10.1;
+					};
+					1158188A218DDE87001491B6 = {
 						CreatedOnToolsVersion = 10.1;
 					};
 				};
@@ -111,12 +225,20 @@
 			projectRoot = "";
 			targets = (
 				1158187A218DDDF2001491B6 /* ReStore */,
+				1158188A218DDE87001491B6 /* ReStoreRouter */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		11581879218DDDF2001491B6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		11581889218DDE87001491B6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -130,6 +252,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11469A5F2193400000378B6A /* Event.swift in Sources */,
+				114674ED219215200034A7FF /* Store.swift in Sources */,
+				114674F9219215D00034A7FF /* StandartExecutor.swift in Sources */,
+				114674F5219215B50034A7FF /* Result.swift in Sources */,
+				114674F3219215AC0034A7FF /* Action.swift in Sources */,
+				114674EF219215720034A7FF /* Store+Rx.swift in Sources */,
+				114674F1219215A50034A7FF /* Notification.swift in Sources */,
+				114674F7219215BC0034A7FF /* Promise.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		11581887218DDE87001491B6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				11467507219224C00034A7FF /* Routing.swift in Sources */,
+				114674FB219215DA0034A7FF /* Router.swift in Sources */,
+				114674FD219215E10034A7FF /* UINavigationController+Completion.swift in Sources */,
+				114674FF219215E60034A7FF /* StandartRouting.swift in Sources */,
+				11467509219225400034A7FF /* RoutingEvent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,8 +409,13 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = ReStore/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -291,14 +438,69 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = ReStore/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = me.haymob.ReStore;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		11581890218DDE87001491B6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = ReStoreRouter/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = me.haymob.ReStoreRouter;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		11581891218DDE87001491B6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = ReStoreRouter/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = me.haymob.ReStoreRouter;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
@@ -323,6 +525,15 @@
 			buildConfigurations = (
 				11581884218DDDF2001491B6 /* Debug */,
 				11581885218DDDF2001491B6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		11581892218DDE87001491B6 /* Build configuration list for PBXNativeTarget "ReStoreRouter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				11581890218DDE87001491B6 /* Debug */,
+				11581891218DDE87001491B6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

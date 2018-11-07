@@ -1,0 +1,5 @@
+Carthage/
+.DS_Store
+ReStore.xcodeproj/xcuserdata
+ReStore.xcodeproj/project.xcworkspace/xcuserdata
+ReStore.xcworkspace/xcuserdata
