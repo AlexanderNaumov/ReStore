@@ -23,7 +23,18 @@
 		11469A5F2193400000378B6A /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11469A5E2193400000378B6A /* Event.swift */; };
 		11581880218DDDF2001491B6 /* ReStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 1158187E218DDDF2001491B6 /* ReStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1158188F218DDE87001491B6 /* ReStoreRouter.h in Headers */ = {isa = PBXBuildFile; fileRef = 1158188D218DDE87001491B6 /* ReStoreRouter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		11C7CEF121961580008FF089 /* When.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11467501219216D70034A7FF /* When.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		11C7CEF221961588008FF089 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 11581872218DDDF2001491B6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1158187A218DDDF2001491B6;
+			remoteInfo = ReStore;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		114674EC219215200034A7FF /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
@@ -37,7 +48,6 @@
 		114674FC219215E10034A7FF /* UINavigationController+Completion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Completion.swift"; sourceTree = "<group>"; };
 		114674FE219215E60034A7FF /* StandartRouting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandartRouting.swift; sourceTree = "<group>"; };
 		11467501219216D70034A7FF /* When.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = When.framework; path = Carthage/Build/iOS/When.framework; sourceTree = "<group>"; };
-		1146750321921B0B0034A7FF /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		11467506219224C00034A7FF /* Routing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Routing.swift; sourceTree = "<group>"; };
 		11467508219225400034A7FF /* RoutingEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutingEvent.swift; sourceTree = "<group>"; };
 		11469A5E2193400000378B6A /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
@@ -62,6 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11C7CEF121961580008FF089 /* When.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -71,7 +82,6 @@
 		11467500219216D70034A7FF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1146750321921B0B0034A7FF /* RxSwift.framework */,
 				11467501219216D70034A7FF /* When.framework */,
 			);
 			name = Frameworks;
@@ -92,8 +102,8 @@
 			children = (
 				1158187D218DDDF2001491B6 /* ReStore */,
 				1158188C218DDE87001491B6 /* ReStoreRouter */,
-				1158187C218DDDF2001491B6 /* Products */,
 				11467500219216D70034A7FF /* Frameworks */,
+				1158187C218DDDF2001491B6 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -187,6 +197,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				11C7CEF321961588008FF089 /* PBXTargetDependency */,
 			);
 			name = ReStoreRouter;
 			productName = ReStoreRouter;
@@ -274,6 +285,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		11C7CEF321961588008FF089 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1158187A218DDDF2001491B6 /* ReStore */;
+			targetProxy = 11C7CEF221961588008FF089 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		11581881218DDDF2001491B6 /* Debug */ = {
@@ -465,6 +484,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = ReStoreRouter/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -490,6 +513,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = ReStoreRouter/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
