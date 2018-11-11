@@ -25,7 +25,7 @@ extension Store {
                     observer.onError(error)
                 }
             }
-            // observer.removeObserver = { [weak self] in self?.remove($0) }
+            observer.removeObserver = { [weak self] in self?.remove($0) }
             self.observe(observer)
             return observer
         }
