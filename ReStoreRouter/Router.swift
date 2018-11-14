@@ -51,7 +51,7 @@ extension UIViewController {
         static var routingContainer: UInt8 = 32
     }
     private class RoutingContainer {
-        let parent: UIViewController
+        weak var parent: UIViewController!
         let event: AnyEvent
         init(parent: UIViewController, event: AnyEvent) { self.parent = parent; self.event = event }
     }
