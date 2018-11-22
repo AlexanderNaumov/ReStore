@@ -37,6 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		110A28DC21A6F4F00062CC5A /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = ../magento1_app/Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		114674EC219215200034A7FF /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		114674EE219215720034A7FF /* Store+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Store+Rx.swift"; sourceTree = "<group>"; };
 		114674F0219215A50034A7FF /* Notification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
@@ -83,6 +84,7 @@
 			isa = PBXGroup;
 			children = (
 				11467501219216D70034A7FF /* When.framework */,
+				110A28DC21A6F4F00062CC5A /* RxSwift.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
