@@ -59,7 +59,6 @@ extension UIViewController {
     fileprivate var __routing: (UIViewController, AnyEvent) {
         get {
             let obj = objc_getAssociatedObject(self, &AssociatedKeys.routingContainer) as! RoutingContainer
-            print("-- \(obj.parent) \(obj.event)")
             return (obj.parent, obj.event)
         }
         set {
