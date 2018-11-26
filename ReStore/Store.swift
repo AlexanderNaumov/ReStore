@@ -9,7 +9,7 @@
 import Foundation
 import When
 
-public typealias Middleware<S: State> = (_ state: S, _ payload: Any?, _ event: AnyEventResult) -> Void
+public typealias Middleware<S: State> = (_ state: S, _ payload: Any?, _ event: AnyEitherEvent) -> Void
 
 public protocol State {}
 
@@ -55,12 +55,12 @@ public final class Store<S: State>: AnyStore {
             .filter { $0.key as! NSString == type.rawValue as NSString }.values
             .map { $0 as! AnyPromise }
             .forEach { $0.cancel() }
-        notify(eventResult: .event(.e2(.cancelTask(type))), eventType: StoreEvent.self)
+        notify(event: .e2(.cancelTask(type)), eventType: StoreEvent.self)
     }
 
     public func observe<O: StoreObserver, S: State, E: Event>(_ observer: O) where O.S == S, O.E == E {
         observers.append((observer, O.S.self, O.E.self, O.N.self, { observer.notify(notification: $0 as! O.N) }))
-        notify(eventResult: .event(.e2(.onObserve(observer))), eventType: StoreEvent.self)
+        notify(event: .e2(.onObserve(observer)), eventType: StoreEvent.self)
     }
     
     public func remove(_ observer: AnyStoreObserver) {
@@ -115,26 +115,26 @@ public final class Store<S: State>: AnyStore {
             executor.execute(provider, dispatch, cancelTask, action, state)
         }
 
-        let eventResult: AnyEventResult
+        let event: AnyEitherEvent
         do {
             let value = try result<!
             if let valueType = action.event.valueType {
                 guard let v = value, type(of: v) == valueType else { fatalError() }
             }
-            eventResult = .event(.e1(action.event.event(value)))
+            event = .e1(action.event.event(value))
         } catch {
-            eventResult = .error(error)
+            event = .e2(.error(error))
         }
         
-        notify(eventResult: eventResult, eventType: action.event.eventType, value: (action as? AnyActionValue)?.anyValue)
+        notify(event: event, eventType: action.event.eventType, value: (action as? AnyActionValue)?.anyValue)
     }
     
-    private func notify(eventResult: AnyEventResult,  eventType: AnyEvent.Type, value: Any? = nil) {
+    private func notify(event: AnyEitherEvent,  eventType: AnyEvent.Type, value: Any? = nil) {
         (eventType == StoreEvent.self ? observers : observers.filter { $0.eventType == eventType }).forEach {
-            guard let notification = $0.notificationType.init(event: eventResult, state: state(of: $0.stateType)) else { return }
+            guard let notification = $0.notificationType.init(event: event, state: state(of: $0.stateType)) else { return }
             $0.notify(notification)
         }
-        middlewares.forEach { $0(state, value, eventResult) }
+        middlewares.forEach { $0(state, value, event) }
     }
 
     private func state(of type: State.Type) -> State {

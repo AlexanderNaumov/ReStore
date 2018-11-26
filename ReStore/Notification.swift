@@ -7,21 +7,19 @@
 //
 
 protocol AnyNotification {
-    init?(event: AnyEventResult, state: State)
+    init?(event: AnyEitherEvent, state: State)
 }
 
 public struct StoreNotification<E, S>: AnyNotification {
-    public let event: EventResult<E>
+    public let event: EitherEvent<E>
     public let state: S
 
-    init?(event: AnyEventResult, state: State) {
+    init?(event: AnyEitherEvent, state: State) {
         switch event {
-        case let .event(.e1(e)):
-            self.event = .event(.e1(e as! E))
-        case let .event(.e2(e)):
-            self.event = .event(.e2(e))
-        case let .error(e):
-            self.event = .error(e)
+        case let .e1(e):
+            self.event = .e1(e as! E)
+        case let .e2(e):
+            self.event = .e2(e)
         }
         self.state = state as! S
     }
@@ -45,7 +43,7 @@ public final class Observer<E: Event, S: State>: StoreObserver {
 
     public func notify(notification: StoreNotification<E, S>) {
         switch notification.event {
-        case let .event(.e2(.onObserve(observer))):
+        case let .e2(.onObserve(observer)):
             guard observer === self else { return }
             fallthrough
         default:

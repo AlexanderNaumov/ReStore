@@ -9,6 +9,7 @@
 #if canImport(RxSwift)
 
 import RxSwift
+import RxCocoa
 
 extension Observer: Disposable {
     public func dispose() { removeObserver?(self) }
@@ -18,16 +19,22 @@ extension Store {
     public func observable<E: Event, S: State>() -> Observable<(EitherEvent<E>, S)> {
         return Observable<(EitherEvent<E>, S)>.create { observer in
             let observer = Observer<E, S> { notificarion in
-                switch notificarion.event {
-                case let .event(event):
-                    observer.onNext((event, notificarion.state))
-                case let .error(error):
-                    observer.onError(error)
-                }
+//                switch notificarion.event {
+//                case let .event(event):
+//                    observer.onNext((event, notificarion.state))
+//                case let .error(error):
+//                    observer.onError(error)
+//                }
             }
             observer.removeObserver = { [weak self] in self?.remove($0) }
             self.observe(observer)
             return observer
+        }
+    }
+    
+    public var dispatch: Binder<Action> {
+        return Binder(self) { store, action in
+            store.dispatch(action)
         }
     }
 }

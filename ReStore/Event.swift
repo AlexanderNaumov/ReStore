@@ -20,6 +20,7 @@ public typealias Event = AnyEvent & Equatable
 public enum StoreEvent: Event {
     case onObserve(AnyStoreObserver)
     case cancelTask(TaskType)
+    case error(Error)
     
     public static func == (lhs: StoreEvent, rhs: StoreEvent) -> Bool {
         switch (lhs, rhs) {
@@ -27,24 +28,13 @@ public enum StoreEvent: Event {
             return o1 === o2
         case let (.cancelTask(t1), .cancelTask(t2)):
             return t1 == t2
+        case let (.error(e1), .error(e2)):
+            guard let e1 = e1 as? LocalizedError, let e2 = e2 as? LocalizedError else { return false }
+            return e1.errorDescription == e2.errorDescription
         default:
             return false
         }
     }
-}
-
-public func ~=<E: Event>(pattern: E, value: EventResult<E>) -> Bool {
-    if case let .event(.e1(val)) = value {
-        return pattern == val
-    }
-    return false
-}
-
-public func ~=<E: Event>(pattern: StoreEvent, value: EventResult<E>) -> Bool {
-    if case let .event(.e2(val)) = value {
-        return pattern == val
-    }
-    return false
 }
 
 public enum Either<E1, E2> {
@@ -68,14 +58,3 @@ public func ~=<E: Event>(pattern: StoreEvent, value: EitherEvent<E>) -> Bool {
     }
     return false
 }
-
-public enum AnyEventResult {
-    case event(AnyEitherEvent)
-    case error(Error)
-}
-
-public enum EventResult<E> {
-    case event(EitherEvent<E>)
-    case error(Error)
-}
-
