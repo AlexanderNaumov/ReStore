@@ -31,7 +31,6 @@ public struct Router {
     
     public func close(_ routing: Routing, completion: ((Router) -> Void)? = nil) {
         Router.store?.dispatch(Action(Routing.Event.close(routing.event)))
-        print("-- all \(Router.allVC.allObjects)")
         for vc in Router.allVC.allObjects where vc.__routing.1.isEqual(routing.event) {
             switch true {
             case self.vc == vc:
