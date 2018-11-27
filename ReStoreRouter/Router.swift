@@ -51,10 +51,14 @@ extension UIViewController {
     private struct AssociatedKeys {
         static var routingContainer: UInt8 = 32
     }
-    private class RoutingContainer {
+    private class RoutingContainer: NSObject {
         weak var parent: UIViewController!
         let event: AnyEvent
-        init(parent: UIViewController, event: AnyEvent) { self.parent = parent; self.event = event }
+        init(parent: UIViewController, event: AnyEvent) {
+            self.parent = parent
+            self.event = event
+            super.init()
+        }
     }
     fileprivate var __routing: (UIViewController, AnyEvent) {
         get {
