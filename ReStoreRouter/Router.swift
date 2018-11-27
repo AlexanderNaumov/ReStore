@@ -34,7 +34,7 @@ public struct Router {
         for vc in Router.allVC.allObjects where vc.__routing.1.isEqual(routing.event) {
             switch true {
             case self.vc == vc:
-                routing.close?(vc) { completion?(Router(vc.__routing.0)) }
+                routing.close?(vc) { if let vc = vc.__routing.0 { completion?(Router(vc)) } }
                 return
             case self.vc == vc.__routing.0:
                 routing.close?(vc) { completion?(self) }
@@ -50,16 +50,12 @@ extension UIViewController {
     private struct AssociatedKeys {
         static var routingContainer: UInt8 = 32
     }
-    private class RoutingContainer: NSObject {
+    private class RoutingContainer {
         weak var parent: UIViewController!
         let event: AnyEvent
-        init(parent: UIViewController, event: AnyEvent) {
-            self.parent = parent
-            self.event = event
-            super.init()
-        }
+        init(parent: UIViewController!, event: AnyEvent) { self.parent = parent; self.event = event }
     }
-    fileprivate var __routing: (UIViewController, AnyEvent) {
+    fileprivate var __routing: (UIViewController?, AnyEvent) {
         get {
             let obj = objc_getAssociatedObject(self, &AssociatedKeys.routingContainer) as! RoutingContainer
             return (obj.parent, obj.event)
