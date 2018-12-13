@@ -48,7 +48,7 @@ public struct Router {
 
 extension UIViewController {
     private struct AssociatedKeys {
-        static var routingContainer: UInt8 = 32
+        static var routingContainer: UInt8 = 0
     }
     private class RoutingContainer {
         weak var parent: UIViewController!
