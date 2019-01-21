@@ -11,13 +11,13 @@ import ReStore
 
 public struct Router {
     
-    private static weak var store: AnyStore?
+    private static weak var store: StoreAction?
     private static let allVC = NSHashTable<UIViewController>(options: .weakMemory)
     private let vc: UIViewController
     
     fileprivate init(_ vc: UIViewController) { self.vc = vc }
     
-    public static func setStore(_ store: AnyStore) {
+    public static func setStore(_ store: StoreAction) {
         self.store = store
     }
     

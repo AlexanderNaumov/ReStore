@@ -12,6 +12,15 @@ import When
 public typealias Middleware<S: State> = (_ state: S, _ payload: Any?, _ event: AnyEitherEvent) -> Void
 
 public protocol State {}
+public protocol Provider {}
+public protocol StoreAction: class {
+    func dispatch(_ action: Action)
+    func cancelTask(with type: TaskType)
+    func provide<T>(_ c: @autoclosure () -> Promise<T>) -> Promise<T>
+    func provide<T>(_ c: @autoclosure () -> Promise<T>, task: TaskType) -> Promise<T>
+}
+
+extension Store: StoreAction {}
 
 public struct TaskType: RawRepresentable {
     public var rawValue: String
@@ -19,11 +28,7 @@ public struct TaskType: RawRepresentable {
     public static let all = TaskType(rawValue: "allWorkers")
 }
 
-public protocol AnyStore: class {
-    func dispatch(_ action: Action)
-}
-
-public final class Store<S: State>: AnyStore {
+public final class Store<S: State> {
     public private(set) var state: S
 
     public init(state: S, configure: ((Store<S>) -> Void)? = nil) {
@@ -80,6 +85,19 @@ public final class Store<S: State>: AnyStore {
         middlewares.append(middleware)
     }
     
+    public func provide<T>(_ p: @autoclosure () -> Promise<T>) -> Promise<T> {
+        let promise = p()
+        workers.setObject(promise, forKey: TaskType.all.rawValue as NSString)
+        return promise
+    }
+    public func provide<T>(_ p: @autoclosure () -> Promise<T>, task: TaskType) -> Promise<T> {
+        let promise = p()
+        workers.setObject(promise, forKey: task.rawValue as NSString)
+        return promise
+    }
+    
+    private var providers: [Provider] = []
+    
     public func dispatch(_ action: Action) {
         var result: Result<Any?> = .success(value: nil)
 
@@ -97,7 +115,7 @@ public final class Store<S: State>: AnyStore {
             }
         }
 
-        if let executor = action.executor {
+        if let executor = action.oldExecutor {
             var provider: Action.AnyProvider?
             if let container = action.provider {
                 provider = { v in
@@ -113,6 +131,12 @@ public final class Store<S: State>: AnyStore {
             }
             let state = executor.stateType.map { self.state(of: $0) }
             executor.execute(provider, dispatch, cancelTask, action, state)
+        }
+        
+        if let executor = action.executor {
+            let state = executor.stateType.map { self.state(of: $0) }
+            let provider = executor.providerType.flatMap { t in providers.first { type(of: $0) == t } }
+            executor.execute(provider, self, action, state)
         }
 
         let event: AnyEitherEvent
