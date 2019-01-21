@@ -54,6 +54,7 @@ public final class Store<S: State> {
     private var observers: [ObserverContainer] = []
     private let workers = NSMapTable<NSString, AnyObject>.strongToWeakObjects()
     private var middlewares: [Middleware<S>] = []
+    private var providers: [Provider] = []
     
     public func cancelTask(with type: TaskType) {
         workers.dictionaryRepresentation()
@@ -85,6 +86,10 @@ public final class Store<S: State> {
         middlewares.append(middleware)
     }
     
+    public func register(provider: Provider) {
+        providers.append(provider)
+    }
+    
     public func provide<T>(_ p: @autoclosure () -> Promise<T>) -> Promise<T> {
         let promise = p()
         workers.setObject(promise, forKey: TaskType.all.rawValue as NSString)
@@ -95,8 +100,6 @@ public final class Store<S: State> {
         workers.setObject(promise, forKey: task.rawValue as NSString)
         return promise
     }
-    
-    private var providers: [Provider] = []
     
     public func dispatch(_ action: Action) {
         var result: Result<Any?> = .success(value: nil)
