@@ -107,7 +107,7 @@ extension ActionType {
     }
     @discardableResult
     public func executor<P: Provider, S: State>(_ executor: @escaping (P, S) -> Void) -> Self {
-        self.executor = (P.self, nil, { p, _, _, s in executor(p as! P, s as! S) })
+        self.executor = (P.self, S.self, { p, _, _, s in executor(p as! P, s as! S) })
         return self
     }
     @discardableResult
@@ -117,12 +117,12 @@ extension ActionType {
     }
     @discardableResult
     public func executor<S: State>(_ executor: @escaping (StoreAction, S) -> Void) -> Self {
-        self.executor = (nil, nil, { _, sa, _, st in executor(sa, st as! S) })
+        self.executor = (nil, S.self, { _, sa, _, st in executor(sa, st as! S) })
         return self
     }
     @discardableResult
     public func executor<S: State>(_ executor: @escaping (Self, S) -> Void) -> Self {
-        self.executor = (nil, nil, { _, _, a, st in executor(a as! Self, st as! S) })
+        self.executor = (nil, S.self, { _, _, a, st in executor(a as! Self, st as! S) })
         return self
     }
     
@@ -133,23 +133,23 @@ extension ActionType {
     }
     @discardableResult
     public func executor<P: Provider, S: State>(_ executor: @escaping (P, Self, S) -> Void) -> Self {
-        self.executor = (P.self, nil, { p, _, a, s in executor(p as! P, a as! Self, s as! S) })
+        self.executor = (P.self, S.self, { p, _, a, s in executor(p as! P, a as! Self, s as! S) })
         return self
     }
     @discardableResult
     public func executor<P: Provider, S: State>(_ executor: @escaping (P, StoreAction, S) -> Void) -> Self {
-        self.executor = (P.self, nil, { p, sa, _, st in executor(p as! P, sa, st as! S) })
+        self.executor = (P.self, S.self, { p, sa, _, st in executor(p as! P, sa, st as! S) })
         return self
     }
     @discardableResult
     public func executor<S: State>(_ executor: @escaping (StoreAction, Self, S) -> Void) -> Self {
-        self.executor = (nil, nil, { _, sa, a, st in executor(sa, a as! Self, st as! S) })
+        self.executor = (nil, S.self, { _, sa, a, st in executor(sa, a as! Self, st as! S) })
         return self
     }
     
     @discardableResult
     public func executor<P: Provider, S: State>(_ executor: @escaping (P, StoreAction, Self, S) -> Void) -> Self {
-        self.executor = (P.self, nil, { p, sa, a, st in executor(p as! P, sa, a as! Self, st as! S) })
+        self.executor = (P.self, S.self, { p, sa, a, st in executor(p as! P, sa, a as! Self, st as! S) })
         return self
     }
 }
