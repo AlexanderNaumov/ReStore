@@ -18,43 +18,59 @@ extension AnyEvent where Self: Equatable {
 public typealias Event = AnyEvent & Equatable
 
 public enum StoreEvent: Event {
-    case onObserve(AnyStoreObserver)
-    case cancelTask(TaskType)
-    case error(Error)
-    
-    public static func == (lhs: StoreEvent, rhs: StoreEvent) -> Bool {
-        switch (lhs, rhs) {
-        case let (.onObserve(o1), .onObserve(o2)):
-            return o1 === o2
-        case let (.cancelTask(t1), .cancelTask(t2)):
-            return t1 == t2
-        case let (.error(e1), .error(e2)):
-            guard let e1 = e1 as? LocalizedError, let e2 = e2 as? LocalizedError else { return false }
-            return e1.errorDescription == e2.errorDescription
-        default:
-            return false
-        }
-    }
+    case onObserve
+    case cancelTask
+    case error
 }
 
 public enum Either<E1, E2> {
-    case e1(E1)
-    case e2(E2)
+    case e1(E1, Any?)
+    case e2(E2, Any?)
 }
 
 public typealias AnyEitherEvent = Either<AnyEvent, StoreEvent>
 public typealias EitherEvent<E> = Either<E, StoreEvent>
 
 public func ~=<E: Event>(pattern: E, value: EitherEvent<E>) -> Bool {
-    if case let .e1(val) = value {
+    if case let .e1(val, _) = value {
         return pattern == val
     }
     return false
 }
 
 public func ~=<E: Event>(pattern: StoreEvent, value: EitherEvent<E>) -> Bool {
-    if case let .e2(val) = value {
+    if case let .e2(val, _) = value {
         return pattern == val
     }
     return false
+}
+
+extension Either where E1: Event, E2: Event {
+    public func eq(_ e: E1...) -> Bool {
+        for e in e {
+            if case let .e1(val, _) = self, val == e {
+                continue
+            } else {
+                return false
+            }
+        }
+        return true
+    }
+    public func eq(_ e: E2...) -> Bool {
+        for e in e {
+            if case let .e2(val, _) = self, val == e {
+                continue
+            } else {
+                return false
+            }
+        }
+        return true
+    }
+    
+    public var payload: Any? {
+        switch self {
+        case let .e1(_, payload), let .e2(_, payload):
+            return payload
+        }
+    }
 }

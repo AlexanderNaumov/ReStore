@@ -29,11 +29,7 @@ public class Action: ActionType {
         valueType: Any.Type?,
         commit: (Any, inout State) throws -> Any?
     )
-    typealias EventContainer = (
-        eventType: AnyEvent.Type,
-        valueType: Any.Type?,
-        event: (Any?) -> AnyEvent
-    )
+    
     typealias AnyProvider = (Any?) -> Any?
     typealias ProviderContainer = (
         type: TaskType?,
@@ -43,14 +39,11 @@ public class Action: ActionType {
     var oldExecutor: OldExecutorContainer?
     var executor: ExecutorContainer?
     var mutator: MutatorContainer?
-    var event: EventContainer!
+    var event: AnyEvent!
     var provider: ProviderContainer?
     
     public init<E: Event>(_ event: E) {
-        self.event = (E.self, nil, { _ in event })
-    }
-    public init<E: Event, V: Any>(_ event: @escaping (V) -> E) {
-        self.event = (E.self, V.self, { v in event(v as! V) })
+        self.event = event
     }
 }
 
@@ -61,10 +54,6 @@ protocol AnyActionValue: class {
 public class ActionValue<V>: Action {
     public private(set) var value: V!
     public init<E: Event>(_ value: V, _ event: E) {
-        super.init(event)
-        self.value = value
-    }
-    public init<E: Event, EV: Any>(_ value: V, _ event: @escaping (EV) -> E) {
         super.init(event)
         self.value = value
     }

@@ -61,12 +61,12 @@ public final class Store<S: State> {
             .filter { $0.key as! NSString == type.rawValue as NSString }.values
             .map { $0 as! AnyPromise }
             .forEach { $0.cancel() }
-        notify(event: .e2(.cancelTask(type)), eventType: StoreEvent.self)
+        notify(event: .e2(.cancelTask, type), eventType: StoreEvent.self)
     }
 
     public func observe<O: StoreObserver, S: State, E: Event>(_ observer: O) where O.S == S, O.E == E {
         observers.append((observer, O.S.self, O.E.self, O.N.self, { observer.notify(notification: $0 as! O.N) }))
-        notify(event: .e2(.onObserve(observer)), eventType: StoreEvent.self)
+        notify(event: .e2(.onObserve, observer), eventType: StoreEvent.self)
     }
     
     public func remove(_ observer: AnyStoreObserver) {
@@ -145,15 +145,12 @@ public final class Store<S: State> {
         let event: AnyEitherEvent
         do {
             let value = try result<!
-            if let valueType = action.event.valueType {
-                guard let v = value, type(of: v) == valueType else { fatalError() }
-            }
-            event = .e1(action.event.event(value))
+            event = .e1(action.event, value)
         } catch {
-            event = .e2(.error(error))
+            event = .e2(.error, error)
         }
         
-        notify(event: event, eventType: action.event.eventType, value: (action as? AnyActionValue)?.anyValue)
+        notify(event: event, eventType: type(of: action.event), value: (action as? AnyActionValue)?.anyValue)
     }
     
     private func notify(event: AnyEitherEvent,  eventType: AnyEvent.Type, value: Any? = nil) {

@@ -16,10 +16,10 @@ public struct StoreNotification<E, S>: AnyNotification {
 
     init?(event: AnyEitherEvent, state: State) {
         switch event {
-        case let .e1(e):
-            self.event = .e1(e as! E)
-        case let .e2(e):
-            self.event = .e2(e)
+        case let .e1(e, p):
+            self.event = .e1(e as! E, p)
+        case let .e2(e, p):
+            self.event = .e2(e, p)
         }
         self.state = state as! S
     }
@@ -43,8 +43,8 @@ public final class Observer<E: Event, S: State>: StoreObserver {
 
     public func notify(notification: StoreNotification<E, S>) {
         switch notification.event {
-        case let .e2(.onObserve(observer)):
-            guard observer === self else { return }
+        case let .e2(.onObserve, observer):
+            guard let observer = observer as? Observer, observer === self else { return }
             fallthrough
         default:
             callback(notification)
