@@ -49,22 +49,18 @@ extension Either where E1: Event, E2: Event {
     public func eq(_ e: E1...) -> Bool {
         for e in e {
             if case let .e1(val, _) = self, val == e {
-                continue
-            } else {
-                return false
+                return true
             }
         }
-        return true
+        return false
     }
     public func eq(_ e: E2...) -> Bool {
         for e in e {
             if case let .e2(val, _) = self, val == e {
-                continue
-            } else {
-                return false
+                return true
             }
         }
-        return true
+        return false
     }
     
     public var payload: Any? {
