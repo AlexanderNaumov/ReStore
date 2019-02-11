@@ -47,16 +47,16 @@ public func ~=<E: Event>(pattern: StoreEvent, value: EitherEvent<E>) -> Bool {
 
 extension Either where E1: Event, E2: Event {
     public func eq(_ e: E1...) -> Bool {
-        for e in e {
-            if case let .e1(val, _) = self, val == e {
+        if case let .e1(val, _) = self {
+            for e in e where e == val {
                 return true
             }
         }
         return false
     }
     public func eq(_ e: E2...) -> Bool {
-        for e in e {
-            if case let .e2(val, _) = self, val == e {
+        if case let .e2(val, _) = self {
+            for e in e where e == val {
                 return true
             }
         }
