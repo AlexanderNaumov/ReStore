@@ -11,7 +11,6 @@
 		114674EF219215720034A7FF /* Store+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674EE219215720034A7FF /* Store+Rx.swift */; };
 		114674F1219215A50034A7FF /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674F0219215A50034A7FF /* Notification.swift */; };
 		114674F3219215AC0034A7FF /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674F2219215AC0034A7FF /* Action.swift */; };
-		114674F5219215B50034A7FF /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674F4219215B50034A7FF /* Result.swift */; };
 		114674F7219215BC0034A7FF /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674F6219215BC0034A7FF /* Promise.swift */; };
 		114674F9219215D00034A7FF /* StandartExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674F8219215D00034A7FF /* StandartExecutor.swift */; };
 		114674FB219215DA0034A7FF /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674FA219215DA0034A7FF /* Router.swift */; };
@@ -42,7 +41,6 @@
 		114674EE219215720034A7FF /* Store+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Store+Rx.swift"; sourceTree = "<group>"; };
 		114674F0219215A50034A7FF /* Notification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		114674F2219215AC0034A7FF /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
-		114674F4219215B50034A7FF /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		114674F6219215BC0034A7FF /* Promise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
 		114674F8219215D00034A7FF /* StandartExecutor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandartExecutor.swift; sourceTree = "<group>"; };
 		114674FA219215DA0034A7FF /* Router.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
@@ -93,7 +91,6 @@
 			isa = PBXGroup;
 			children = (
 				114674F6219215BC0034A7FF /* Promise.swift */,
-				114674F4219215B50034A7FF /* Result.swift */,
 				114674EE219215720034A7FF /* Store+Rx.swift */,
 			);
 			path = Extensions;
@@ -266,7 +263,6 @@
 				11469A5F2193400000378B6A /* Event.swift in Sources */,
 				114674ED219215200034A7FF /* Store.swift in Sources */,
 				114674F9219215D00034A7FF /* StandartExecutor.swift in Sources */,
-				114674F5219215B50034A7FF /* Result.swift in Sources */,
 				114674F3219215AC0034A7FF /* Action.swift in Sources */,
 				114674EF219215720034A7FF /* Store+Rx.swift in Sources */,
 				114674F1219215A50034A7FF /* Notification.swift in Sources */,
@@ -443,7 +439,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = me.haymob.ReStore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -472,7 +468,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = me.haymob.ReStore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -501,7 +497,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = me.haymob.ReStoreRouter;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -530,7 +525,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = me.haymob.ReStoreRouter;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

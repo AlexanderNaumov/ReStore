@@ -11,19 +11,17 @@
 import RxSwift
 import RxCocoa
 
-extension Observer: Disposable {
-    public func dispose() { removeObserver?(self) }
-}
-
 extension Store {
     public func observable<E: Event, S: State>() -> Observable<(EitherEvent<E>, S)> {
-        return Observable<(EitherEvent<E>, S)>.create { observer in
-            let observer = Observer<E, S> { notificarion in
+        return Observable<(EitherEvent<E>, S)>.create { [weak self] observer in
+            let observer = Observer333<E, S> { notificarion in
                 observer.onNext((notificarion.event, notificarion.state))
             }
-            observer.removeObserver = { [weak self] in self?.remove($0) }
-            self.observe(observer)
-            return observer
+            self?.observe(observer)
+            return Disposables.create { [weak observer] in
+                guard let observer = observer else { return }
+                self?.remove(observer)
+            }
         }
     }
     

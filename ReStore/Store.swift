@@ -70,7 +70,7 @@ public final class Store<S: State> {
     }
     
     public func remove(_ observer: AnyStoreObserver) {
-        guard let index = observers.index(where: { $0.observer === observer }) else { return }
+        guard let index = observers.firstIndex(where: { $0.observer === observer }) else { return }
         observers.remove(at: index)
     }
 
@@ -143,10 +143,10 @@ public final class Store<S: State> {
         }
 
         let event: AnyEitherEvent
-        do {
-            let value = try result<!
+        switch result {
+        case let .success(value: value):
             event = .e1(action.event, value)
-        } catch {
+        case let .failure(error: error):
             event = .e2(.error, error)
         }
         
@@ -164,7 +164,7 @@ public final class Store<S: State> {
     private func state(of type: State.Type) -> State {
         if type == S.self {
             return state
-        } else if let index = customStates.index(where: { $0.type == type }) {
+        } else if let index = customStates.firstIndex(where: { $0.type == type }) {
             return customStates[index].get()
         }
         fatalError()
@@ -173,7 +173,7 @@ public final class Store<S: State> {
     private func set(state: State, of type: State.Type) {
         if type == S.self {
             self.state = state as! S
-        } else if let index = customStates.index(where: { $0.type == type }) {
+        } else if let index = customStates.firstIndex(where: { $0.type == type }) {
             customStates[index].set(state)
         }
     }

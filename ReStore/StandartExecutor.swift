@@ -6,6 +6,8 @@
 //  Copyright © 2018 Alexander Naumov. All rights reserved.
 //
 
+import When
+
 public struct StandartExecutor {
     public static func cancelTask(_ task: TaskType...) -> (@escaping CancelTaskAction) -> Void {
         return { task.forEach($0) }

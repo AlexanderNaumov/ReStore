@@ -26,8 +26,8 @@ public struct StandartRouting {
         from.view.addSubview(to.view)
         to.view.translatesAutoresizingMaskIntoConstraints = false
         from.view.addConstraints(
-            NSLayoutConstraint.constraints(withVisualFormat: "H:|[subview]|", metrics: nil, views: ["subview": to.view]) +
-            NSLayoutConstraint.constraints(withVisualFormat: "V:|[subview]|", metrics: nil, views: ["subview": to.view])
+            NSLayoutConstraint.constraints(withVisualFormat: "H:|[subview]|", metrics: nil, views: ["subview": to.view!]) +
+            NSLayoutConstraint.constraints(withVisualFormat: "V:|[subview]|", metrics: nil, views: ["subview": to.view!])
         )
         to.didMove(toParent: from)
         completion()
