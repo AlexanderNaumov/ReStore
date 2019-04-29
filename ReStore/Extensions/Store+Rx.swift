@@ -14,7 +14,7 @@ import RxCocoa
 extension Store {
     public func observable<E: Event, S: State>() -> Observable<(EitherEvent<E>, S)> {
         return Observable<(EitherEvent<E>, S)>.create { [weak self] observer in
-            let observer = Observer333<E, S> { notificarion in
+            let observer = Observer<E, S> { notificarion in
                 observer.onNext((notificarion.event, notificarion.state))
             }
             self?.observe(observer)
