@@ -49,7 +49,4 @@ public final class Observer<E: Event, S: State>: StoreObserver {
             callback(notification)
         }
     }
-    deinit {
-        print("---- deinit \(self)")
-    }
 }
