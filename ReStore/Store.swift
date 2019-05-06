@@ -102,40 +102,22 @@ public final class Store<S: State> {
     }
     
     public func dispatch(_ action: Action) {
-        var result: Result<Any?> = .success(value: nil)
+        var result: Swift.Result<Any?, Error> = .success(nil)
 
         if let mutator = action.mutator {
             var state = self.state(of: mutator.stateType)
             do {
                 let value = try mutator.commit(action, &state)
                 set(state: state, of: mutator.stateType)
-                result = .success(value: value)
+                result = .success(value)
             } catch When.PromiseError.cancelled {
                 return
             } catch {
                 set(state: state, of: mutator.stateType)
-                result = .failure(error: error)
+                result = .failure(error)
             }
         }
 
-        if let executor = action.oldExecutor {
-            var provider: Action.AnyProvider?
-            if let container = action.provider {
-                provider = { v in
-                    let result = container.provider(v)
-                    if let promise = result as? AnyPromise {
-                        self.workers.setObject(promise, forKey: TaskType.all.rawValue as NSString)
-                        if let type = container.type {
-                            self.workers.setObject(promise, forKey: type.rawValue as NSString)
-                        }
-                    }
-                    return result
-                }
-            }
-            let state = executor.stateType.map { self.state(of: $0) }
-            executor.execute(provider, dispatch, cancelTask, action, state)
-        }
-        
         if let executor = action.executor {
             let state = executor.stateType.map { self.state(of: $0) }
             let provider = executor.providerType.flatMap { t in providers.first { type(of: $0) == t } }

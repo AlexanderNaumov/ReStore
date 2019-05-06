@@ -12,7 +12,6 @@
 		114674F1219215A50034A7FF /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674F0219215A50034A7FF /* Notification.swift */; };
 		114674F3219215AC0034A7FF /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674F2219215AC0034A7FF /* Action.swift */; };
 		114674F7219215BC0034A7FF /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674F6219215BC0034A7FF /* Promise.swift */; };
-		114674F9219215D00034A7FF /* StandartExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674F8219215D00034A7FF /* StandartExecutor.swift */; };
 		114674FB219215DA0034A7FF /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674FA219215DA0034A7FF /* Router.swift */; };
 		114674FD219215E10034A7FF /* UINavigationController+Completion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674FC219215E10034A7FF /* UINavigationController+Completion.swift */; };
 		114674FF219215E60034A7FF /* StandartRouting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674FE219215E60034A7FF /* StandartRouting.swift */; };
@@ -42,7 +41,6 @@
 		114674F0219215A50034A7FF /* Notification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		114674F2219215AC0034A7FF /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
 		114674F6219215BC0034A7FF /* Promise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
-		114674F8219215D00034A7FF /* StandartExecutor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandartExecutor.swift; sourceTree = "<group>"; };
 		114674FA219215DA0034A7FF /* Router.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		114674FC219215E10034A7FF /* UINavigationController+Completion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Completion.swift"; sourceTree = "<group>"; };
 		114674FE219215E60034A7FF /* StandartRouting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandartRouting.swift; sourceTree = "<group>"; };
@@ -122,7 +120,6 @@
 				114674F2219215AC0034A7FF /* Action.swift */,
 				11469A5E2193400000378B6A /* Event.swift */,
 				114674F0219215A50034A7FF /* Notification.swift */,
-				114674F8219215D00034A7FF /* StandartExecutor.swift */,
 				11469A542193104100378B6A /* Extensions */,
 				1158187E218DDDF2001491B6 /* ReStore.h */,
 				1158187F218DDDF2001491B6 /* Info.plist */,
@@ -226,6 +223,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 11581871218DDDF2001491B6;
 			productRefGroup = 1158187C218DDDF2001491B6 /* Products */;
@@ -262,7 +260,6 @@
 			files = (
 				11469A5F2193400000378B6A /* Event.swift in Sources */,
 				114674ED219215200034A7FF /* Store.swift in Sources */,
-				114674F9219215D00034A7FF /* StandartExecutor.swift in Sources */,
 				114674F3219215AC0034A7FF /* Action.swift in Sources */,
 				114674EF219215720034A7FF /* Store+Rx.swift in Sources */,
 				114674F1219215A50034A7FF /* Notification.swift in Sources */,
