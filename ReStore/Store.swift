@@ -136,11 +136,11 @@ public final class Store<S: State> {
     }
     
     private func notify(event: AnyEitherEvent,  eventType: AnyEvent.Type, value: Any? = nil) {
-        middlewares.forEach { $0(state, value, event) }
         (eventType == StoreEvent.self ? observers : observers.filter { $0.eventType == eventType }).forEach {
             guard let notification = $0.notificationType.init(event: event, state: state(of: $0.stateType)) else { return }
             $0.notify(notification)
         }
+        middlewares.forEach { $0(state, value, event) }
     }
 
     private func state(of type: State.Type) -> State {
