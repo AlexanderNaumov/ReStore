@@ -21,12 +21,12 @@ public struct Router {
         self.store = store
     }
     
-    public func open(_ routing: Routing, payload: Any? = nil, completion: ((Router) -> Void)? = nil) {
+    public func open(_ routing: Routing, sourceTag: Routing.Tag? = nil, payload: Any? = nil, completion: ((Router) -> Void)? = nil) {
         Router.store?.dispatch(ActionValue<Any?>(payload, Routing.Event.open(routing.event)))
         let newVc = routing.controller(payload)
         newVc.__routing = (vc, routing.event)
         Router.allVC.add(newVc)
-        routing.open(vc, newVc) { completion?(Router(newVc)) }
+        routing.open(vc, newVc, sourceTag) { completion?(Router(newVc)) }
     }
     
     public func close(_ routing: Routing, completion: ((Router) -> Void)? = nil) {
