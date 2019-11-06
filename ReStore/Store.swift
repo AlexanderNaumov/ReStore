@@ -38,7 +38,6 @@ public final class StoreState<T: State> {
     }
     func asObservable() -> Observable<T> {
         return Observable.create { [weak self] observer in
-            observer.onNext(self!.value)
             let observer = StateObserver<T> { state in
                 observer.onNext(state)
             }
@@ -115,6 +114,7 @@ public final class Store<S: State>: AnyStore {
     
     func observe<S: State>(_ observer: StateObserver<S>) {
         stateObservers.append((observer, S.self, { observer.notify(state: $0 as! S) }))
+        observer.notify(state: state(of: S.self) as! S)
     }
     
     func remove(observer: AnyStateObserver) {
