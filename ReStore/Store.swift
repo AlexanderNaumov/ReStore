@@ -36,7 +36,7 @@ public final class StoreState<T: State> {
         self.value = value
         self.store = store
     }
-    func asObservable() -> Observable<T> {
+    public func asObservable() -> Observable<T> {
         return Observable.create { [weak self] observer in
             let observer = StateObserver<T> { state in
                 observer.onNext(state)
