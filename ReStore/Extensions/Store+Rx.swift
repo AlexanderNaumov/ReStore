@@ -28,4 +28,17 @@ extension Store {
             store.dispatch(action)
         }
     }
+    
+    public func event<E: Event>() -> Observable<EitherEvent<E>> {
+        return Observable<EitherEvent<E>>.create { [weak self] observer in
+            let observer = ObserverEvent<E> { n in
+                observer.onNext(n.event)
+            }
+            self?.observe(observer)
+            return Disposables.create { [weak observer] in
+                guard let observer = observer else { return }
+                self?.remove(observer)
+            }
+        }
+    }
 }

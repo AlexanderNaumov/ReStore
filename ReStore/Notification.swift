@@ -50,3 +50,21 @@ public final class Observer<E: Event, S: State>: StoreObserver {
         }
     }
 }
+
+class ObserverEvent<E: Event>: StoreObserver {
+    private var callback: ((N) -> Void)!
+       
+    init(_ callback: @escaping (N) -> Void) {
+        self.callback = callback
+    }
+    
+    func notify(notification: StoreNotification<E, State>) {
+        switch notification.event {
+        case let .e2(.onObserve, observer):
+            guard let observer = observer as? ObserverEvent, observer === self else { return }
+            fallthrough
+        default:
+            callback(notification)
+        }
+    }
+}

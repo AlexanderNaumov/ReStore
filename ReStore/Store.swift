@@ -29,23 +29,22 @@ public struct TaskType: RawRepresentable {
 }
 
 public final class StoreState<T> {
-    public internal (set) var value: T
+    public let value: T
     init(_ value: T) {
         self.value = value
     }
 }
 
 public final class Store<S: State> {
-    public private(set) var state: S
+    private var _state: S
 
-    public init(state: S, configure: ((Store<S>) -> Void)? = nil) {
-        self.state = state
-        configure?(self)
+    public init(state: S) {
+        _state = state
     }
 
     private typealias ObserverContainer = (
         observer: AnyStoreObserver,
-        stateType: State.Type,
+        stateType: State.Type?,
         eventType: AnyEvent.Type,
         notificationType: AnyNotification.Type,
         notify: (AnyNotification) -> Void
@@ -63,7 +62,7 @@ public final class Store<S: State> {
     private var middlewares: [Middleware<S>] = []
     private var providers: [Provider] = []
     
-    public func storeState<S: State>() -> StoreState<S> {
+    public func state<S: State>() -> StoreState<S> {
         return StoreState(state(of: S.self) as! S)
     }
     
@@ -80,6 +79,11 @@ public final class Store<S: State> {
         notify(event: .e2(.onObserve, observer), eventType: StoreEvent.self)
     }
     
+    func observe<O: StoreObserver, E: Event>(_ observer: O) where O.E == E {
+        observers.append((observer, nil, O.E.self, O.N.self, { observer.notify(notification: $0 as! O.N) }))
+        notify(event: .e2(.onObserve, observer), eventType: StoreEvent.self)
+    }
+    
     public func remove(_ observer: AnyStoreObserver) {
         guard let index = observers.firstIndex(where: { $0.observer === observer }) else { return }
         observers.remove(at: index)
@@ -90,7 +94,7 @@ public final class Store<S: State> {
     }
 
     public func register<C: State>(keyPath: WritableKeyPath<S, C>) {
-        customStates.append((C.self, { self.state[keyPath: keyPath] }, { self.state[keyPath: keyPath] = $0 as! C }))
+        customStates.append((C.self, { self._state[keyPath: keyPath] }, { self._state[keyPath: keyPath] = $0 as! C }))
     }
     
     public func register(middleware: @escaping Middleware<S>) {
@@ -148,15 +152,15 @@ public final class Store<S: State> {
     
     private func notify(event: AnyEitherEvent,  eventType: AnyEvent.Type, value: Any? = nil) {
         (eventType == StoreEvent.self ? observers : observers.filter { $0.eventType == eventType }).forEach {
-            guard let notification = $0.notificationType.init(event: event, state: state(of: $0.stateType)) else { return }
+            guard let notification = $0.notificationType.init(event: event, state: state(of: $0.stateType ?? S.self)) else { return }
             $0.notify(notification)
         }
-        middlewares.forEach { $0(state, value, event) }
+        middlewares.forEach { $0(_state, value, event) }
     }
 
     private func state(of type: State.Type) -> State {
         if type == S.self {
-            return state
+            return _state
         } else if let index = customStates.firstIndex(where: { $0.type == type }) {
             return customStates[index].get()
         }
@@ -165,7 +169,7 @@ public final class Store<S: State> {
 
     private func set(state: State, of type: State.Type) {
         if type == S.self {
-            self.state = state as! S
+            self._state = state as! S
         } else if let index = customStates.firstIndex(where: { $0.type == type }) {
             customStates[index].set(state)
         }
