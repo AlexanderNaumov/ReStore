@@ -8,6 +8,7 @@
 
 import Foundation
 import When
+import RxSwift
 
 public typealias Middleware<S: State> = (_ state: S, _ payload: Any?, _ event: AnyEitherEvent) -> Void
 
@@ -28,14 +29,35 @@ public struct TaskType: RawRepresentable {
     public static let all = TaskType(rawValue: "allWorkers")
 }
 
-public final class StoreState<T> {
+public final class StoreState<T: State> {
     public let value: T
-    init(_ value: T) {
+    private weak var store: AnyStore?
+    init(_ store: AnyStore, value: T) {
         self.value = value
+        self.store = store
+    }
+    func asObservable() -> Observable<T> {
+        return Observable.create { [weak self] observer in
+            observer.onNext(self!.value)
+            let observer = StateObserver<T> { state in
+                observer.onNext(state)
+            }
+            self!.store?.observe(observer)
+            return Disposables.create { [weak observer] in
+                guard let observer = observer else { return }
+                self?.store?.remove(observer: observer)
+            }
+        }
     }
 }
 
-public final class Store<S: State> {
+
+protocol AnyStore: class {
+    func observe<S: State>(_ observer: StateObserver<S>)
+    func remove(observer: AnyStateObserver)
+}
+
+public final class Store<S: State>: AnyStore {
     private var _state: S
 
     public init(state: S) {
@@ -49,6 +71,12 @@ public final class Store<S: State> {
         notificationType: AnyNotification.Type,
         notify: (AnyNotification) -> Void
     )
+    
+    private typealias StateObserverContainer = (
+        observer: AnyStateObserver,
+        stateType: State.Type,
+        notify: (State) -> Void
+    )
 
     private typealias StateContainer = (
         type: State.Type,
@@ -58,12 +86,13 @@ public final class Store<S: State> {
 
     private var customStates: [StateContainer] = []
     private var observers: [ObserverContainer] = []
+    private var stateObservers: [StateObserverContainer] = []
     private let workers = NSMapTable<NSString, AnyObject>.strongToWeakObjects()
     private var middlewares: [Middleware<S>] = []
     private var providers: [Provider] = []
     
     public func state<S: State>() -> StoreState<S> {
-        return StoreState(state(of: S.self) as! S)
+        return StoreState(self, value: state(of: S.self) as! S)
     }
     
     public func cancelTask(with type: TaskType) {
@@ -82,6 +111,16 @@ public final class Store<S: State> {
     func observe<O: StoreObserver, E: Event>(_ observer: O) where O.E == E {
         observers.append((observer, nil, O.E.self, O.N.self, { observer.notify(notification: $0 as! O.N) }))
         notify(event: .e2(.onObserve, observer), eventType: StoreEvent.self)
+    }
+    
+    func observe<S: State>(_ observer: StateObserver<S>) {
+        stateObservers.append((observer, S.self, { observer.notify(state: $0 as! S) }))
+    }
+    
+    func remove(observer: AnyStateObserver) {
+        if let index = stateObservers.firstIndex(where: { $0.observer === observer }) {
+            stateObservers.remove(at: index)
+        }
     }
     
     public func remove(_ observer: AnyStoreObserver) {
@@ -125,6 +164,7 @@ public final class Store<S: State> {
                 let value = try mutator.commit(action, &state)
                 set(state: state, of: mutator.stateType)
                 result = .success(value)
+                notify(state: state)
             } catch When.PromiseError.cancelled {
                 return
             } catch {
@@ -148,6 +188,10 @@ public final class Store<S: State> {
         }
         
         notify(event: event, eventType: type(of: action.event), value: (action as? AnyActionValue)?.anyValue)
+    }
+    
+    private func notify(state: State) {
+        stateObservers.first { $0.stateType == type(of: state) }?.notify(state)
     }
     
     private func notify(event: AnyEitherEvent,  eventType: AnyEvent.Type, value: Any? = nil) {

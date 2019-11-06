@@ -68,3 +68,17 @@ class ObserverEvent<E: Event>: StoreObserver {
         }
     }
 }
+
+protocol AnyStateObserver: class {}
+
+class StateObserver<S: State>: AnyStateObserver {
+    private var callback: ((S) -> Void)!
+       
+    init(_ callback: @escaping (S) -> Void) {
+        self.callback = callback
+    }
+    
+    func notify(state: S) {
+        callback(state)
+    }
+}
