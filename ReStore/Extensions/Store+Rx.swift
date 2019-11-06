@@ -6,8 +6,6 @@
 //  Copyright © 2018 Alexander Naumov. All rights reserved.
 //
 
-#if canImport(RxSwift)
-
 import RxSwift
 import RxCocoa
 
@@ -31,5 +29,3 @@ extension Store {
         }
     }
 }
-
-#endif

@@ -28,6 +28,13 @@ public struct TaskType: RawRepresentable {
     public static let all = TaskType(rawValue: "allWorkers")
 }
 
+public final class StoreState<T> {
+    public internal (set) var value: T
+    init(_ value: T) {
+        self.value = value
+    }
+}
+
 public final class Store<S: State> {
     public private(set) var state: S
 
@@ -55,6 +62,10 @@ public final class Store<S: State> {
     private let workers = NSMapTable<NSString, AnyObject>.strongToWeakObjects()
     private var middlewares: [Middleware<S>] = []
     private var providers: [Provider] = []
+    
+    public func storeState<S: State>() -> StoreState<S> {
+        return StoreState(state(of: S.self) as! S)
+    }
     
     public func cancelTask(with type: TaskType) {
         workers.dictionaryRepresentation()
