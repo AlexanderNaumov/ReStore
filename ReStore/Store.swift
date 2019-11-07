@@ -29,23 +29,23 @@ public struct TaskType: RawRepresentable {
     public static let all = TaskType(rawValue: "allWorkers")
 }
 
-public final class StoreState<T: State> {
+public final class StoreState<T: State>: ObservableType {
     public let value: T
     private weak var store: AnyStore?
     init(_ store: AnyStore, value: T) {
         self.value = value
         self.store = store
     }
-    public func asObservable() -> Observable<T> {
-        return Observable.create { [weak self] observer in
-            let observer = StateObserver<T> { state in
-                observer.onNext(state)
-            }
-            self!.store?.observe(observer)
-            return Disposables.create { [weak observer] in
-                guard let observer = observer else { return }
-                self?.store?.remove(observer: observer)
-            }
+    
+    public typealias Element = T
+    public func subscribe<Observer: ObserverType>(_ observer: Observer) -> Disposable where Element == Observer.Element {
+        let observer = StateObserver<T> { state in
+            observer.onNext(state)
+        }
+        store?.observe(observer)
+        return Disposables.create { [weak self, weak observer] in
+            guard let observer = observer else { return }
+            self?.store?.remove(observer: observer)
         }
     }
 }
