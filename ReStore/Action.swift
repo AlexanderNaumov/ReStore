@@ -13,17 +13,22 @@ public protocol ActionType where Self: Action {}
 public class Action: ActionType {
     typealias ExecutorContainer = (
         providerType: Provider.Type?,
-        stateType: State.Type?,
-        execute: (Provider?, StoreAction, Any, State?) -> Void
+        execute: (Provider?, ExecutorStore, ActionType) -> Void
     )
     typealias MutatorContainer = (
         stateType: State.Type,
         valueType: Any.Type?,
-        commit: (Any, inout State) throws -> Any?
+        commit: (ActionType, inout State) throws -> Any?
+    )
+    
+    typealias MutatorContainerNew = (
+        stateType: State.Type,
+        commit: (ActionType, MutatorStore) throws -> Mutate
     )
     
     var executor: ExecutorContainer?
     var mutator: MutatorContainer?
+    var mutatorNew: MutatorContainerNew?
     let event: AnyEvent
     
     public init<E: Event>(_ event: E) {
@@ -54,75 +59,37 @@ extension ActionValue: AnyActionValue {
 extension ActionType {
     @discardableResult
     public func executor<P: Provider>(_ executor: @escaping (P) -> Void) -> Self {
-        self.executor = (P.self, nil, { p, _, _, _ in executor(p as! P) })
+        self.executor = (P.self, { p, _, _ in executor(p as! P) })
         return self
     }
     @discardableResult
-    public func executor(_ executor: @escaping (StoreAction) -> Void) -> Self {
-        self.executor = (nil, nil, { _, s, _, _ in executor(s) })
+    public func executor(_ executor: @escaping (ExecutorStore) -> Void) -> Self {
+        self.executor = (nil, { _, s, _ in executor(s) })
         return self
     }
     @discardableResult
     public func executor(_ executor: @escaping (Self) -> Void) -> Self {
-        self.executor = (nil, nil, { _, _, a, _ in executor(a as! Self) })
+        self.executor = (nil, { _, _, a in executor(a as! Self) })
         return self
     }
-    
     @discardableResult
-    public func executor<P: Provider>(_ executor: @escaping (P, StoreAction) -> Void) -> Self {
-        self.executor = (P.self, nil, { p, s, _, _ in executor(p as! P, s) })
+    public func executor<P: Provider>(_ executor: @escaping (P, ExecutorStore) -> Void) -> Self {
+        self.executor = (P.self, { p, s, _ in executor(p as! P, s) })
         return self
     }
     @discardableResult
     public func executor<P: Provider>(_ executor: @escaping (P, Self) -> Void) -> Self {
-        self.executor = (P.self, nil, { p, _, a, _ in executor(p as! P, a as! Self) })
+        self.executor = (P.self, { p, _, a in executor(p as! P, a as! Self) })
         return self
     }
     @discardableResult
-    public func executor<P: Provider, S: State>(_ executor: @escaping (P, S) -> Void) -> Self {
-        self.executor = (P.self, S.self, { p, _, _, s in executor(p as! P, s as! S) })
+    public func executor(_ executor: @escaping (ExecutorStore, Self) -> Void) -> Self {
+        self.executor = (nil, { _, s, a in executor(s, a as! Self) })
         return self
     }
     @discardableResult
-    public func executor(_ executor: @escaping (StoreAction, Self) -> Void) -> Self {
-        self.executor = (nil, nil, { _, s, a, _ in executor(s, a as! Self) })
-        return self
-    }
-    @discardableResult
-    public func executor<S: State>(_ executor: @escaping (StoreAction, S) -> Void) -> Self {
-        self.executor = (nil, S.self, { _, sa, _, st in executor(sa, st as! S) })
-        return self
-    }
-    @discardableResult
-    public func executor<S: State>(_ executor: @escaping (Self, S) -> Void) -> Self {
-        self.executor = (nil, S.self, { _, _, a, st in executor(a as! Self, st as! S) })
-        return self
-    }
-    
-    @discardableResult
-    public func executor<P: Provider>(_ executor: @escaping (P, StoreAction, Self) -> Void) -> Self {
-        self.executor = (P.self, nil, { p, s, a, _ in executor(p as! P, s, a as! Self) })
-        return self
-    }
-    @discardableResult
-    public func executor<P: Provider, S: State>(_ executor: @escaping (P, Self, S) -> Void) -> Self {
-        self.executor = (P.self, S.self, { p, _, a, s in executor(p as! P, a as! Self, s as! S) })
-        return self
-    }
-    @discardableResult
-    public func executor<P: Provider, S: State>(_ executor: @escaping (P, StoreAction, S) -> Void) -> Self {
-        self.executor = (P.self, S.self, { p, sa, _, st in executor(p as! P, sa, st as! S) })
-        return self
-    }
-    @discardableResult
-    public func executor<S: State>(_ executor: @escaping (StoreAction, Self, S) -> Void) -> Self {
-        self.executor = (nil, S.self, { _, sa, a, st in executor(sa, a as! Self, st as! S) })
-        return self
-    }
-    
-    @discardableResult
-    public func executor<P: Provider, S: State>(_ executor: @escaping (P, StoreAction, Self, S) -> Void) -> Self {
-        self.executor = (P.self, S.self, { p, sa, a, st in executor(p as! P, sa, a as! Self, st as! S) })
+    public func executor<P: Provider>(_ executor: @escaping (P, ExecutorStore, Self) -> Void) -> Self {
+        self.executor = (P.self, { p, s, a in executor(p as! P, s, a as! Self) })
         return self
     }
 }
@@ -168,6 +135,89 @@ extension ActionType {
             defer { s = state }
             try mutator(a as! Self, &state)
             return nil
+        })
+        return self
+    }
+}
+
+enum Mutate {
+    case state(State)
+    case result(AnyResult)
+}
+
+protocol AnyResult {
+    var anyState: State { get }
+    var anyPayload: Any { get }
+}
+
+public struct Result<S: State, P> {
+    public let state: S, payload: P
+    public init(state: S, payload: P) {
+        self.state = state
+        self.payload = payload
+    }
+}
+
+extension Result: AnyResult {
+    var anyState: State { return state }
+    var anyPayload: Any { return payload }
+}
+
+extension ActionType {
+    @discardableResult
+    public func mutator<S: State>(_ mutator: @escaping () throws -> S) -> Self {
+        self.mutatorNew = (S.self, { _, _ in
+            .state(try mutator())
+        })
+        return self
+    }
+    @discardableResult
+    public func mutator<S: State>(_ mutator: @escaping (MutatorStore) throws -> S) -> Self {
+        self.mutatorNew = (S.self, { _, s in
+            .state(try mutator(s))
+        })
+        return self
+    }
+    @discardableResult
+    public func mutator<S: State>(_ mutator: @escaping (Self) throws -> S) -> Self {
+        self.mutatorNew = (S.self, { a, _ in
+            .state(try mutator(a as! Self))
+        })
+        return self
+    }
+    @discardableResult
+    public func mutator<S: State>(_ mutator: @escaping (Self, MutatorStore) throws -> S) -> Self {
+        self.mutatorNew = (S.self, { a, s in
+            .state(try mutator(a as! Self, s))
+        })
+        return self
+    }
+    
+    @discardableResult
+    public func mutator<S: State, P>(_ mutator: @escaping () throws -> Result<S, P>) -> Self {
+        self.mutatorNew = (S.self, { _, _ in
+            .result(try mutator())
+        })
+        return self
+    }
+    @discardableResult
+    public func mutator<S: State, P>(_ mutator: @escaping (MutatorStore) throws -> Result<S, P>) -> Self {
+        self.mutatorNew = (S.self, { _, s in
+            .result(try mutator(s))
+        })
+        return self
+    }
+    @discardableResult
+    public func mutator<S: State, P>(_ mutator: @escaping (Self) throws -> Result<S, P>) -> Self {
+        self.mutatorNew = (S.self, { a, _ in
+            .result(try mutator(a as! Self))
+        })
+        return self
+    }
+    @discardableResult
+    public func mutator<S: State, P>(_ mutator: @escaping (Self, MutatorStore) throws -> Result<S, P>) -> Self {
+        self.mutatorNew = (S.self, { a, s in
+            .result(try mutator(a as! Self, s))
         })
         return self
     }

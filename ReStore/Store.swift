@@ -14,14 +14,17 @@ public typealias Middleware<S: State> = (_ state: S, _ payload: Any?, _ event: A
 
 public protocol State {}
 public protocol Provider {}
-public protocol StoreAction: class {
+public protocol ExecutorStore: class {
     func dispatch(_ action: Action)
     func cancelTask(with type: TaskType)
     func provide<T>(_ c: @autoclosure () -> Promise<T>) -> Promise<T>
     func provide<T>(_ c: @autoclosure () -> Promise<T>, task: TaskType) -> Promise<T>
+    func state<S: State>() -> S
 }
 
-extension Store: StoreAction {}
+public protocol MutatorStore: class {
+    func state<S: State>() -> S
+}
 
 public struct TaskType: RawRepresentable {
     public var rawValue: String
@@ -56,7 +59,7 @@ protocol AnyStore: class {
     func remove(observer: AnyStateObserver)
 }
 
-public final class Store<S: State>: AnyStore {
+public final class Store<S: State>: AnyStore, ExecutorStore, MutatorStore {
     private var _state: S
 
     public init(state: S) {
@@ -92,6 +95,10 @@ public final class Store<S: State>: AnyStore {
     
     public func state<S: State>() -> StoreState<S> {
         return StoreState(self, value: state(of: S.self) as! S)
+    }
+    
+    public func state<S: State>() -> S {
+        return state(of: S.self) as! S
     }
     
     public func cancelTask(with type: TaskType) {
@@ -164,7 +171,6 @@ public final class Store<S: State>: AnyStore {
                 let value = try mutator.commit(action, &state)
                 set(state: state, of: mutator.stateType)
                 result = .success(value)
-                notify(state: state)
             } catch When.PromiseError.cancelled {
                 return
             } catch {
@@ -172,11 +178,32 @@ public final class Store<S: State>: AnyStore {
                 result = .failure(error)
             }
         }
+        if let mutator = action.mutatorNew {
+            do {
+                let mutate = try mutator.commit(action, self)
+                let state: State
+                let payload: Any?
+                switch mutate {
+                case let .state(s):
+                    state = s
+                    payload = nil
+                case let .result(r):
+                    state = r.anyState
+                    payload = r.anyPayload
+                }
+                set(state: state, of: mutator.stateType)
+                notify(state: state)
+                result = .success(payload)
+            } catch When.PromiseError.cancelled {
+                return
+            } catch {
+                result = .failure(error)
+            }
+        }
 
         if let executor = action.executor {
-            let state = executor.stateType.map { self.state(of: $0) }
             let provider = executor.providerType.flatMap { t in providers.first { type(of: $0) == t } }
-            executor.execute(provider, self, action, state)
+            executor.execute(provider, self, action)
         }
 
         let event: AnyEitherEvent
