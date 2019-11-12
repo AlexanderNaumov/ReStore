@@ -164,21 +164,8 @@ public final class Store<S: State>: AnyStore, ExecutorStore, MutatorStore {
     
     public func dispatch(_ action: Action) {
         var result: Swift.Result<Any?, Error> = .success(nil)
-
+        
         if let mutator = action.mutator {
-            var state = self.state(of: mutator.stateType)
-            do {
-                let value = try mutator.commit(action, &state)
-                set(state: state, of: mutator.stateType)
-                result = .success(value)
-            } catch When.PromiseError.cancelled {
-                return
-            } catch {
-                set(state: state, of: mutator.stateType)
-                result = .failure(error)
-            }
-        }
-        if let mutator = action.mutatorNew {
             do {
                 let mutate = try mutator.commit(action, self)
                 let state: State
@@ -218,7 +205,7 @@ public final class Store<S: State>: AnyStore, ExecutorStore, MutatorStore {
     }
     
     private func notify(state: State) {
-        stateObservers.first { $0.stateType == type(of: state) }?.notify(state)
+        stateObservers.filter { $0.stateType == type(of: state) }.forEach { $0.notify(state) }
     }
     
     private func notify(event: AnyEitherEvent,  eventType: AnyEvent.Type, value: Any? = nil) {

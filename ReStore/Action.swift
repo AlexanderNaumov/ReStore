@@ -15,20 +15,14 @@ public class Action: ActionType {
         providerType: Provider.Type?,
         execute: (Provider?, ExecutorStore, ActionType) -> Void
     )
-    typealias MutatorContainer = (
-        stateType: State.Type,
-        valueType: Any.Type?,
-        commit: (ActionType, inout State) throws -> Any?
-    )
     
-    typealias MutatorContainerNew = (
+    typealias MutatorContainer = (
         stateType: State.Type,
         commit: (ActionType, MutatorStore) throws -> Mutate
     )
     
     var executor: ExecutorContainer?
     var mutator: MutatorContainer?
-    var mutatorNew: MutatorContainerNew?
     let event: AnyEvent
     
     public init<E: Event>(_ event: E) {
@@ -96,50 +90,6 @@ extension ActionType {
 
 // MARK: - Mutator
 
-extension ActionType {
-    @discardableResult
-    public func mutator<S: State, V: Any>(_ mutator: @escaping (inout S) throws -> V) -> Self {
-        self.mutator = (S.self, V.self, { _, s in
-            var state = s as! S
-            defer { s = state }
-            return try mutator(&state)
-        })
-        return self
-    }
-    
-    @discardableResult
-    public func mutator<S: State>(_ mutator: @escaping (inout S) throws -> Void) -> Self {
-        self.mutator = (S.self, nil, { _, s in
-            var state = s as! S
-            defer { s = state }
-            try mutator(&state)
-            return nil
-        })
-        return self
-    }
-    
-    @discardableResult
-    public func mutator<S: State, V: Any>(_ mutator: @escaping (Self, inout S) throws -> V) -> Self {
-        self.mutator = (S.self, V.self, { a, s in
-            var state = s as! S
-            defer { s = state }
-            return try mutator(a as! Self, &state)
-        })
-        return self
-    }
-    
-    @discardableResult
-    public func mutator<S: State>(_ mutator: @escaping (Self, inout S) throws -> Void) -> Self {
-        self.mutator = (S.self, nil, { a, s in
-            var state = s as! S
-            defer { s = state }
-            try mutator(a as! Self, &state)
-            return nil
-        })
-        return self
-    }
-}
-
 enum Mutate {
     case state(State)
     case result(AnyResult)
@@ -166,28 +116,28 @@ extension Result: AnyResult {
 extension ActionType {
     @discardableResult
     public func mutator<S: State>(_ mutator: @escaping () throws -> S) -> Self {
-        self.mutatorNew = (S.self, { _, _ in
+        self.mutator = (S.self, { _, _ in
             .state(try mutator())
         })
         return self
     }
     @discardableResult
     public func mutator<S: State>(_ mutator: @escaping (MutatorStore) throws -> S) -> Self {
-        self.mutatorNew = (S.self, { _, s in
+        self.mutator = (S.self, { _, s in
             .state(try mutator(s))
         })
         return self
     }
     @discardableResult
     public func mutator<S: State>(_ mutator: @escaping (Self) throws -> S) -> Self {
-        self.mutatorNew = (S.self, { a, _ in
+        self.mutator = (S.self, { a, _ in
             .state(try mutator(a as! Self))
         })
         return self
     }
     @discardableResult
     public func mutator<S: State>(_ mutator: @escaping (Self, MutatorStore) throws -> S) -> Self {
-        self.mutatorNew = (S.self, { a, s in
+        self.mutator = (S.self, { a, s in
             .state(try mutator(a as! Self, s))
         })
         return self
@@ -195,28 +145,28 @@ extension ActionType {
     
     @discardableResult
     public func mutator<S: State, P>(_ mutator: @escaping () throws -> Result<S, P>) -> Self {
-        self.mutatorNew = (S.self, { _, _ in
+        self.mutator = (S.self, { _, _ in
             .result(try mutator())
         })
         return self
     }
     @discardableResult
     public func mutator<S: State, P>(_ mutator: @escaping (MutatorStore) throws -> Result<S, P>) -> Self {
-        self.mutatorNew = (S.self, { _, s in
+        self.mutator = (S.self, { _, s in
             .result(try mutator(s))
         })
         return self
     }
     @discardableResult
     public func mutator<S: State, P>(_ mutator: @escaping (Self) throws -> Result<S, P>) -> Self {
-        self.mutatorNew = (S.self, { a, _ in
+        self.mutator = (S.self, { a, _ in
             .result(try mutator(a as! Self))
         })
         return self
     }
     @discardableResult
     public func mutator<S: State, P>(_ mutator: @escaping (Self, MutatorStore) throws -> Result<S, P>) -> Self {
-        self.mutatorNew = (S.self, { a, s in
+        self.mutator = (S.self, { a, s in
             .result(try mutator(a as! Self, s))
         })
         return self
