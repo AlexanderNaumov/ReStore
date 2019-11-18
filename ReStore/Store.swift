@@ -106,17 +106,17 @@ public final class Store<S: State>: AnyStore, ExecutorStore, MutatorStore {
             .filter { $0.key as! NSString == type.rawValue as NSString }.values
             .map { $0 as! AnyPromise }
             .forEach { $0.cancel() }
-        notify(event: .e2(.cancelTask, type), eventType: StoreEvent.self)
+        notify(event: .e2(.cancelTask, type), eventType: InnerEvent.self)
     }
 
     public func observe<O: StoreObserver, S: State, E: Event>(_ observer: O) where O.S == S, O.E == E {
         observers.append((observer, O.S.self, O.E.self, O.N.self, { observer.notify(notification: $0 as! O.N) }))
-        notify(event: .e2(.onObserve, observer), eventType: StoreEvent.self)
+        notify(event: .e2(.onObserve, observer), eventType: InnerEvent.self)
     }
     
     func observe<O: StoreObserver, E: Event>(_ observer: O) where O.E == E {
         observers.append((observer, nil, O.E.self, O.N.self, { observer.notify(notification: $0 as! O.N) }))
-        notify(event: .e2(.onObserve, observer), eventType: StoreEvent.self)
+        notify(event: .e2(.onObserve, observer), eventType: InnerEvent.self)
     }
     
     func observe<S: State>(_ observer: StateObserver<S>) {
@@ -209,7 +209,7 @@ public final class Store<S: State>: AnyStore, ExecutorStore, MutatorStore {
     }
     
     private func notify(event: AnyEitherEvent,  eventType: AnyEvent.Type, value: Any? = nil) {
-        (eventType == StoreEvent.self ? observers : observers.filter { $0.eventType == eventType }).forEach {
+        (eventType == InnerEvent.self ? observers : observers.filter { $0.eventType == eventType }).forEach {
             guard let notification = $0.notificationType.init(event: event, state: state(of: $0.stateType ?? S.self)) else { return }
             $0.notify(notification)
         }
@@ -230,6 +230,32 @@ public final class Store<S: State>: AnyStore, ExecutorStore, MutatorStore {
             self._state = state as! S
         } else if let index = customStates.firstIndex(where: { $0.type == type }) {
             customStates[index].set(state)
+        }
+    }
+}
+
+import RxCocoa
+import RxSwift
+
+public typealias StoreEvent<E> = Observable<Either<E, InnerEvent>>
+
+extension Store {
+    public var dispatch: Binder<Action> {
+        return Binder(self) { store, action in
+            store.dispatch(action)
+        }
+    }
+    
+    public func event<E: Event>() -> Observable<EitherEvent<E>> {
+        return Observable<EitherEvent<E>>.create { [weak self] observer in
+            let observer = ObserverEvent<E> { n in
+                observer.onNext(n.event)
+            }
+            self?.observe(observer)
+            return Disposables.create { [weak observer] in
+                guard let observer = observer else { return }
+                self?.remove(observer)
+            }
         }
     }
 }

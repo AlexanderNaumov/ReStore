@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		114674ED219215200034A7FF /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674EC219215200034A7FF /* Store.swift */; };
-		114674EF219215720034A7FF /* Store+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674EE219215720034A7FF /* Store+Rx.swift */; };
 		114674F1219215A50034A7FF /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674F0219215A50034A7FF /* Notification.swift */; };
 		114674F3219215AC0034A7FF /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674F2219215AC0034A7FF /* Action.swift */; };
 		114674F7219215BC0034A7FF /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114674F6219215BC0034A7FF /* Promise.swift */; };
@@ -37,7 +36,6 @@
 /* Begin PBXFileReference section */
 		110A28DC21A6F4F00062CC5A /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = ../magento1_app/Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		114674EC219215200034A7FF /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
-		114674EE219215720034A7FF /* Store+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Store+Rx.swift"; sourceTree = "<group>"; };
 		114674F0219215A50034A7FF /* Notification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		114674F2219215AC0034A7FF /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
 		114674F6219215BC0034A7FF /* Promise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
@@ -89,7 +87,6 @@
 			isa = PBXGroup;
 			children = (
 				114674F6219215BC0034A7FF /* Promise.swift */,
-				114674EE219215720034A7FF /* Store+Rx.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -261,7 +258,6 @@
 				11469A5F2193400000378B6A /* Event.swift in Sources */,
 				114674ED219215200034A7FF /* Store.swift in Sources */,
 				114674F3219215AC0034A7FF /* Action.swift in Sources */,
-				114674EF219215720034A7FF /* Store+Rx.swift in Sources */,
 				114674F1219215A50034A7FF /* Notification.swift in Sources */,
 				114674F7219215BC0034A7FF /* Promise.swift in Sources */,
 			);

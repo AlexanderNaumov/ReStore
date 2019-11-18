@@ -33,24 +33,6 @@ public protocol StoreObserver: AnyStoreObserver {
     func notify(notification: N)
 }
 
-public final class Observer<E: Event, S: State>: StoreObserver {
-    private var callback: ((N) -> Void)!
-    
-    public init(_ callback: @escaping (N) -> Void) {
-        self.callback = callback
-    }
-
-    public func notify(notification: StoreNotification<E, S>) {
-        switch notification.event {
-        case let .e2(.onObserve, observer):
-            guard let observer = observer as? Observer, observer === self else { return }
-            fallthrough
-        default:
-            callback(notification)
-        }
-    }
-}
-
 class ObserverEvent<E: Event>: StoreObserver {
     private var callback: ((N) -> Void)!
        
