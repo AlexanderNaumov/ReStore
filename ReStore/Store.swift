@@ -10,7 +10,7 @@ import Foundation
 import When
 import RxSwift
 
-public typealias Middleware<S: State> = (_ state: S, _ payload: Any?, _ event: AnyEitherEvent) -> Void
+public typealias Middleware = (_ store: MutatorStore, _ payload: Any?, _ event: AnyEitherEvent) -> Void
 
 public protocol State {}
 public protocol Provider {}
@@ -90,7 +90,7 @@ public final class Store<S: State>: AnyStore, ExecutorStore, MutatorStore {
     private var observers: [ObserverContainer] = []
     private var stateObservers: [StateObserverContainer] = []
     private let workers = NSMapTable<NSString, AnyObject>.strongToWeakObjects()
-    private var middlewares: [Middleware<S>] = []
+    private var middlewares: [Middleware] = []
     private var providers: [Provider] = []
     
     public func state<S: State>() -> StoreState<S> {
@@ -143,7 +143,7 @@ public final class Store<S: State>: AnyStore, ExecutorStore, MutatorStore {
         customStates.append((C.self, { self._state[keyPath: keyPath] }, { self._state[keyPath: keyPath] = $0 as! C }))
     }
     
-    public func register(middleware: @escaping Middleware<S>) {
+    public func register(middleware: @escaping Middleware) {
         middlewares.append(middleware)
     }
     
@@ -213,7 +213,7 @@ public final class Store<S: State>: AnyStore, ExecutorStore, MutatorStore {
             guard let notification = $0.notificationType.init(event: event, state: state(of: $0.stateType ?? S.self)) else { return }
             $0.notify(notification)
         }
-        middlewares.forEach { $0(_state, value, event) }
+        middlewares.forEach { $0(self, value, event) }
     }
 
     private func state(of type: State.Type) -> State {
