@@ -104,6 +104,11 @@ public final class Store: ExecutorStore, MutatorStore {
         observer.notify(state: state(of: S.self) as! S)
     }
     
+    public func removeAllObservers() {
+        eventObservers.removeAll()
+        stateObservers.removeAll()
+    }
+    
     func remove(observer: AnyStateObserver) {
         guard let index = stateObservers.firstIndex(where: { $0.observer === observer }) else { return }
         stateObservers.remove(at: index)
