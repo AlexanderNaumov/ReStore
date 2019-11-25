@@ -6,47 +6,30 @@
 //  Copyright © 2018 Alexander Naumov. All rights reserved.
 //
 
-protocol AnyNotification {
-    init?(event: AnyEitherEvent, state: State)
-}
 
-public struct StoreNotification<E, S>: AnyNotification {
-    public let event: EitherEvent<E>
-    public let state: S
+public protocol AnyEventObserver: class {}
 
-    init?(event: AnyEitherEvent, state: State) {
-        switch event {
-        case let .e1(e, p):
-            self.event = .e1(e as! E, p)
-        case let .e2(e, p):
-            self.event = .e2(e, p)
-        }
-        self.state = state as! S
-    }
-}
-
-public protocol AnyStoreObserver: class {}
-public protocol StoreObserver: AnyStoreObserver {
-    associatedtype E = Event
-    associatedtype S = State
-    typealias N = StoreNotification<E, S>
-    func notify(notification: N)
-}
-
-class ObserverEvent<E: Event>: StoreObserver {
-    private var callback: ((N) -> Void)!
+class EventObserver<E: Event>: AnyEventObserver {
+    private var callback: ((EitherEvent<E>) -> Void)!
        
-    init(_ callback: @escaping (N) -> Void) {
+    init(_ callback: @escaping (EitherEvent<E>) -> Void) {
         self.callback = callback
     }
     
-    func notify(notification: StoreNotification<E, State>) {
-        switch notification.event {
+    func notify(event: AnyEitherEvent) {
+        switch event {
         case let .e2(.onObserve, observer):
-            guard let observer = observer as? ObserverEvent, observer === self else { return }
+            guard let observer = observer as? EventObserver, observer === self else { return }
             fallthrough
         default:
-            callback(notification)
+            var ev: EitherEvent<E>
+            switch event {
+            case let .e1(e, p):
+                ev = .e1(e as! E, p)
+            case let .e2(e, p):
+                ev = .e2(e, p)
+            }
+            callback(ev)
         }
     }
 }
@@ -60,7 +43,7 @@ class StateObserver<S: State>: AnyStateObserver {
         self.callback = callback
     }
     
-    func notify(state: S) {
-        callback(state)
+    func notify(state: State) {
+        callback(state as! S)
     }
 }

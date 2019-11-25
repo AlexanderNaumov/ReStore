@@ -34,8 +34,8 @@ public struct TaskType: RawRepresentable {
 
 public final class StoreState<T: State>: ObservableType {
     public let value: T
-    private weak var store: AnyStore?
-    init(_ store: AnyStore, value: T) {
+    private weak var store: Store?
+    init(_ store: Store, value: T) {
         self.value = value
         self.store = store
     }
@@ -53,25 +53,16 @@ public final class StoreState<T: State>: ObservableType {
     }
 }
 
-
-protocol AnyStore: class {
-    func observe<S: State>(_ observer: StateObserver<S>)
-    func remove(observer: AnyStateObserver)
-}
-
-public final class Store<S: State>: AnyStore, ExecutorStore, MutatorStore {
-    private var _state: S
-
-    public init(state: S) {
-        _state = state
-    }
-
-    private typealias ObserverContainer = (
-        observer: AnyStoreObserver,
-        stateType: State.Type?,
+public final class Store: ExecutorStore, MutatorStore {
+    
+    public static let `default` = Store()
+    
+    private init() {}
+    
+    private typealias EventObserverContainer = (
+        observer: AnyEventObserver,
         eventType: AnyEvent.Type,
-        notificationType: AnyNotification.Type,
-        notify: (AnyNotification) -> Void
+        notify: (AnyEitherEvent) -> Void
     )
     
     private typealias StateObserverContainer = (
@@ -80,14 +71,8 @@ public final class Store<S: State>: AnyStore, ExecutorStore, MutatorStore {
         notify: (State) -> Void
     )
 
-    private typealias StateContainer = (
-        type: State.Type,
-        get: () -> State,
-        set: (State) -> Void
-    )
-
-    private var customStates: [StateContainer] = []
-    private var observers: [ObserverContainer] = []
+    private var states: [String: State] = [:]
+    private var eventObservers: [EventObserverContainer] = []
     private var stateObservers: [StateObserverContainer] = []
     private let workers = NSMapTable<NSString, AnyObject>.strongToWeakObjects()
     private var middlewares: [Middleware] = []
@@ -108,39 +93,29 @@ public final class Store<S: State>: AnyStore, ExecutorStore, MutatorStore {
             .forEach { $0.cancel() }
         notify(event: .e2(.cancelTask, type), eventType: InnerEvent.self)
     }
-
-    public func observe<O: StoreObserver, S: State, E: Event>(_ observer: O) where O.S == S, O.E == E {
-        observers.append((observer, O.S.self, O.E.self, O.N.self, { observer.notify(notification: $0 as! O.N) }))
-        notify(event: .e2(.onObserve, observer), eventType: InnerEvent.self)
-    }
     
-    func observe<O: StoreObserver, E: Event>(_ observer: O) where O.E == E {
-        observers.append((observer, nil, O.E.self, O.N.self, { observer.notify(notification: $0 as! O.N) }))
+    func observe<E: Event>(_ observer: EventObserver<E>) {
+        eventObservers.append((observer, E.self, { observer.notify(event: $0) }))
         notify(event: .e2(.onObserve, observer), eventType: InnerEvent.self)
     }
     
     func observe<S: State>(_ observer: StateObserver<S>) {
-        stateObservers.append((observer, S.self, { observer.notify(state: $0 as! S) }))
+        stateObservers.append((observer, S.self, { observer.notify(state: $0) }))
         observer.notify(state: state(of: S.self) as! S)
     }
     
     func remove(observer: AnyStateObserver) {
-        if let index = stateObservers.firstIndex(where: { $0.observer === observer }) {
-            stateObservers.remove(at: index)
-        }
+        guard let index = stateObservers.firstIndex(where: { $0.observer === observer }) else { return }
+        stateObservers.remove(at: index)
     }
     
-    public func remove(_ observer: AnyStoreObserver) {
-        guard let index = observers.firstIndex(where: { $0.observer === observer }) else { return }
-        observers.remove(at: index)
+    public func remove(_ observer: AnyEventObserver) {
+        guard let index = eventObservers.firstIndex(where: { $0.observer === observer }) else { return }
+        eventObservers.remove(at: index)
     }
 
-    public func removeAllObservers() {
-        observers.removeAll()
-    }
-
-    public func register<C: State>(keyPath: WritableKeyPath<S, C>) {
-        customStates.append((C.self, { self._state[keyPath: keyPath] }, { self._state[keyPath: keyPath] = $0 as! C }))
+    public func register(state: State) {
+        states[String(describing: type(of: state))] = state
     }
     
     public func register(middleware: @escaping Middleware) {
@@ -209,28 +184,18 @@ public final class Store<S: State>: AnyStore, ExecutorStore, MutatorStore {
     }
     
     private func notify(event: AnyEitherEvent,  eventType: AnyEvent.Type, value: Any? = nil) {
-        (eventType == InnerEvent.self ? observers : observers.filter { $0.eventType == eventType }).forEach {
-            guard let notification = $0.notificationType.init(event: event, state: state(of: $0.stateType ?? S.self)) else { return }
-            $0.notify(notification)
+        (eventType == InnerEvent.self ? eventObservers : eventObservers.filter { $0.eventType == eventType }).forEach {
+            $0.notify(event)
         }
         middlewares.forEach { $0(self, value, event) }
     }
 
     private func state(of type: State.Type) -> State {
-        if type == S.self {
-            return _state
-        } else if let index = customStates.firstIndex(where: { $0.type == type }) {
-            return customStates[index].get()
-        }
-        fatalError()
+        return states[String(describing: type)]!
     }
 
     private func set(state: State, of type: State.Type) {
-        if type == S.self {
-            self._state = state as! S
-        } else if let index = customStates.firstIndex(where: { $0.type == type }) {
-            customStates[index].set(state)
-        }
+        states[String(describing: type)] = state
     }
 }
 
@@ -248,8 +213,8 @@ extension Store {
     
     public func event<E: Event>() -> Observable<EitherEvent<E>> {
         return Observable<EitherEvent<E>>.create { [weak self] observer in
-            let observer = ObserverEvent<E> { n in
-                observer.onNext(n.event)
+            let observer = EventObserver<E> { e in
+                observer.onNext(e)
             }
             self?.observe(observer)
             return Disposables.create { [weak observer] in
