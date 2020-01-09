@@ -78,6 +78,13 @@ public final class Store: ExecutorStore, MutatorStore {
     private var middlewares: [Middleware] = []
     private var providers: [Provider] = []
     
+    public func removeAll() {
+        states.removeAll()
+        middlewares.removeAll()
+        providers.removeAll()
+        workers.removeAllObjects()
+    }
+    
     public func state<S: State>() -> StoreState<S> {
         return StoreState(self, value: state(of: S.self) as! S)
     }
