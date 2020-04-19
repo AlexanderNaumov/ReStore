@@ -1,2 +1,2 @@
 github "MetalheadSanya/When" "master"
-github "AlexanderNaumov/RxSwift" "master"
+github "ReactiveX/RxSwift" ~> 5.0
