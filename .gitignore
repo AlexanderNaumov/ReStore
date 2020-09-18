@@ -3,3 +3,5 @@ Carthage/
 ReStore.xcodeproj/xcuserdata
 ReStore.xcodeproj/project.xcworkspace/xcuserdata
 ReStore.xcworkspace/xcuserdata
+.build/
+.swiftpm/
