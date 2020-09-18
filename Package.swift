@@ -14,6 +14,6 @@ let package = Package(
         .package(url: "https://github.com/ReactiveX/RxSwift.git", from: "5.0.0")
     ],
     targets: [
-        .target(name: "ReStore", dependencies: ["When", .product(name: "RxSwift", package: "RxSwift")], path: "Sources")
+        .target(name: "ReStore", dependencies: ["When", .product(name: "RxCocoa", package: "RxSwift")], path: "Sources")
     ]
 )
