@@ -20,7 +20,7 @@ public protocol ExecutorStore: class {
     func provide<T>(_ c: @autoclosure () -> Promise<T>) -> Promise<T>
     func provide<T>(_ c: @autoclosure () -> Promise<T>, type: JobType) -> Promise<T>
     func state<S: State>() -> S
-    func submitJob<J: ObservableType>(_ job: J, type: JobType, completion: @escaping (RxSwift.Event<J.Element>) -> Void) where J.Element == Action
+    func submitJob<J: ObservableType>(_ job: J, type: JobType, completion: @escaping (RxSwift.Event<J.Element>) -> Void)
 }
 
 public protocol MutatorStore: class {
@@ -149,7 +149,7 @@ public final class Store: ExecutorStore, MutatorStore {
         return promise
     }
     
-    public func submitJob<J: ObservableType>(_ job: J, type: JobType, completion: @escaping (RxSwift.Event<J.Element>) -> Void) where J.Element == Action {
+    public func submitJob<J: ObservableType>(_ job: J, type: JobType, completion: @escaping (RxSwift.Event<J.Element>) -> Void) {
         let obj = job.subscribe(completion) as AnyObject
         workers.setObject(obj, forKey: type.rawValue as NSString)
     }
