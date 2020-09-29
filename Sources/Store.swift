@@ -16,9 +16,9 @@ public protocol State {}
 public protocol Provider {}
 public protocol ExecutorStore: class {
     func dispatch(_ action: Action)
-    func cancelTask(with type: TaskType)
+    func cancelJob(with type: JobType)
     func provide<T>(_ c: @autoclosure () -> Promise<T>) -> Promise<T>
-    func provide<T>(_ c: @autoclosure () -> Promise<T>, task: TaskType) -> Promise<T>
+    func provide<T>(_ c: @autoclosure () -> Promise<T>, type: JobType) -> Promise<T>
     func state<S: State>() -> S
 }
 
@@ -26,10 +26,10 @@ public protocol MutatorStore: class {
     func state<S: State>() -> S
 }
 
-public struct TaskType: RawRepresentable {
+public struct JobType: RawRepresentable {
     public var rawValue: String
     public init(rawValue: String) { self.rawValue = rawValue }
-    public static let all = TaskType(rawValue: "allWorkers")
+    public static let all = JobType(rawValue: "allWorkers")
 }
 
 public final class StoreState<T: State>: ObservableType {
@@ -93,11 +93,10 @@ public final class Store: ExecutorStore, MutatorStore {
         return state(of: S.self) as! S
     }
     
-    public func cancelTask(with type: TaskType) {
-        workers.dictionaryRepresentation()
-            .filter { $0.key as! NSString == type.rawValue as NSString }.values
-            .map { $0 as! AnyPromise }
-            .forEach { $0.cancel() }
+    public func cancelJob(with type: JobType) {
+        let jobs = self.workers.dictionaryRepresentation().filter { $0.key as! NSString == type.rawValue as NSString }.values
+        jobs.compactMap { $0 as? AnyPromise }.forEach { $0.cancel() }
+        jobs.compactMap { $0 as? Disposable }.forEach { $0.dispose() }
         notify(event: .e2(.cancelTask, type), eventType: InnerEvent.self)
     }
     
@@ -140,13 +139,18 @@ public final class Store: ExecutorStore, MutatorStore {
     
     public func provide<T>(_ p: @autoclosure () -> Promise<T>) -> Promise<T> {
         let promise = p()
-        workers.setObject(promise, forKey: TaskType.all.rawValue as NSString)
+        workers.setObject(promise, forKey: JobType.all.rawValue as NSString)
         return promise
     }
-    public func provide<T>(_ p: @autoclosure () -> Promise<T>, task: TaskType) -> Promise<T> {
+    public func provide<T>(_ p: @autoclosure () -> Promise<T>, type: JobType) -> Promise<T> {
         let promise = p()
-        workers.setObject(promise, forKey: task.rawValue as NSString)
+        workers.setObject(promise, forKey: type.rawValue as NSString)
         return promise
+    }
+    
+    public func submitJob<J: ObservableType>(_ job: J, type: JobType, completion: @escaping (RxSwift.Event<J.Element>) -> Void) where J.Element == Action {
+        let obj = job.subscribe(completion) as AnyObject
+        workers.setObject(obj, forKey: type.rawValue as NSString)
     }
     
     public func dispatch(_ action: Action) {
@@ -212,7 +216,6 @@ public final class Store: ExecutorStore, MutatorStore {
 }
 
 import RxCocoa
-import RxSwift
 
 public typealias StoreEvent<E> = Observable<Either<E, InnerEvent>>
 
