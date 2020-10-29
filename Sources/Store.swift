@@ -19,6 +19,7 @@ public protocol ExecutorStore: class {
     func cancelJob(with type: JobType)
     func provide<T>(_ c: @autoclosure () -> Promise<T>) -> Promise<T>
     func provide<T>(_ c: @autoclosure () -> Promise<T>, type: JobType) -> Promise<T>
+    func state<S: State>() -> StoreState<S>
     func state<S: State>() -> S
     func submitJob<J: ObservableType>(_ job: J, type: JobType, completion: @escaping (RxSwift.Event<J.Element>) -> Void)
 }
