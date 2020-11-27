@@ -22,6 +22,7 @@ public protocol ExecutorStore: class {
     func state<S: State>() -> StoreState<S>
     func state<S: State>() -> S
     func submitJob<J: ObservableType>(_ job: J, type: JobType, completion: @escaping (RxSwift.Event<J.Element>) -> Void)
+    func removeAllObservers()
 }
 
 public protocol MutatorStore: class {
@@ -171,7 +172,7 @@ public final class Store: ExecutorStore, MutatorStore {
                     state = r.anyState
                     payload = r.anyPayload
                 }
-                set(state: state, of: mutator.stateType)
+                update(state: state, of: mutator.stateType)
                 notify(state: state)
                 result = .success(payload)
             } catch When.PromiseError.cancelled {
@@ -212,7 +213,7 @@ public final class Store: ExecutorStore, MutatorStore {
         return states[String(describing: type)]!
     }
 
-    private func set(state: State, of type: State.Type) {
+    private func update(state: State, of type: State.Type) {
         states[String(describing: type)] = state
     }
 }
