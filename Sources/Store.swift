@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import When
 import RxSwift
 
 public typealias Middleware = (_ store: MutatorStore, _ payload: Any?, _ event: AnyEitherEvent) -> Void
@@ -17,8 +16,6 @@ public protocol Provider {}
 public protocol ExecutorStore: class {
     func dispatch(_ action: Action)
     func cancelJob(with type: JobType)
-    func provide<T>(_ c: @autoclosure () -> Promise<T>) -> Promise<T>
-    func provide<T>(_ c: @autoclosure () -> Promise<T>, type: JobType) -> Promise<T>
     func state<S: State>() -> StoreState<S>
     func state<S: State>() -> S
     func submitJob<J: ObservableType>(_ job: J, type: JobType, completion: @escaping (RxSwift.Event<J.Element>) -> Void)
@@ -98,7 +95,6 @@ public final class Store: ExecutorStore, MutatorStore {
     
     public func cancelJob(with type: JobType) {
         let jobs = self.workers.dictionaryRepresentation().filter { $0.key as! NSString == type.rawValue as NSString }.values
-        jobs.compactMap { $0 as? AnyPromise }.forEach { $0.cancel() }
         jobs.compactMap { $0 as? Disposable }.forEach { $0.dispose() }
         notify(event: .e2(.cancelTask, type), eventType: InnerEvent.self)
     }
@@ -140,17 +136,6 @@ public final class Store: ExecutorStore, MutatorStore {
         providers.append(provider)
     }
     
-    public func provide<T>(_ p: @autoclosure () -> Promise<T>) -> Promise<T> {
-        let promise = p()
-        workers.setObject(promise, forKey: JobType.all.rawValue as NSString)
-        return promise
-    }
-    public func provide<T>(_ p: @autoclosure () -> Promise<T>, type: JobType) -> Promise<T> {
-        let promise = p()
-        workers.setObject(promise, forKey: type.rawValue as NSString)
-        return promise
-    }
-    
     public func submitJob<J: ObservableType>(_ job: J, type: JobType, completion: @escaping (RxSwift.Event<J.Element>) -> Void) {
         let obj = job.subscribe(completion) as AnyObject
         workers.setObject(obj, forKey: type.rawValue as NSString)
@@ -175,8 +160,6 @@ public final class Store: ExecutorStore, MutatorStore {
                 update(state: state, of: mutator.stateType)
                 notify(state: state)
                 result = .success(payload)
-            } catch When.PromiseError.cancelled {
-                return
             } catch {
                 result = .failure(error)
             }

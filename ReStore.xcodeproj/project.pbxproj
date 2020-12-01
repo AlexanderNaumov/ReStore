@@ -7,18 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		11467502219216D70034A7FF /* When.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11467501219216D70034A7FF /* When.framework */; };
 		238F918B25153FDE00FE1449 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F918625153FDE00FE1449 /* Notification.swift */; };
 		238F918C25153FDE00FE1449 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F918725153FDE00FE1449 /* Event.swift */; };
 		238F918D25153FDE00FE1449 /* ReStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 238F918825153FDE00FE1449 /* ReStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		238F918E25153FDE00FE1449 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F918925153FDE00FE1449 /* Store.swift */; };
 		238F918F25153FDE00FE1449 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F918A25153FDE00FE1449 /* Action.swift */; };
-		238F91932515401700FE1449 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F91922515401700FE1449 /* Promise.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		110A28DC21A6F4F00062CC5A /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = ../magento1_app/Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
-		11467501219216D70034A7FF /* When.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = When.framework; path = Carthage/Build/iOS/When.framework; sourceTree = "<group>"; };
 		1158187B218DDDF2001491B6 /* ReStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ReStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1158187F218DDDF2001491B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		238F918625153FDE00FE1449 /* Notification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Notification.swift; path = Sources/Notification.swift; sourceTree = "<group>"; };
@@ -26,7 +23,6 @@
 		238F918825153FDE00FE1449 /* ReStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReStore.h; path = Sources/ReStore.h; sourceTree = "<group>"; };
 		238F918925153FDE00FE1449 /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Store.swift; path = Sources/Store.swift; sourceTree = "<group>"; };
 		238F918A25153FDE00FE1449 /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Action.swift; path = Sources/Action.swift; sourceTree = "<group>"; };
-		238F91922515401700FE1449 /* Promise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Promise.swift; path = Sources/Extensions/Promise.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -34,7 +30,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				11467502219216D70034A7FF /* When.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,7 +39,6 @@
 		11467500219216D70034A7FF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				11467501219216D70034A7FF /* When.framework */,
 				110A28DC21A6F4F00062CC5A /* RxSwift.framework */,
 			);
 			name = Frameworks;
@@ -75,18 +69,9 @@
 				238F918A25153FDE00FE1449 /* Action.swift */,
 				238F918725153FDE00FE1449 /* Event.swift */,
 				238F918625153FDE00FE1449 /* Notification.swift */,
-				238F91912515400200FE1449 /* Extensions */,
 				1158187F218DDDF2001491B6 /* Info.plist */,
 			);
 			name = ReStore;
-			sourceTree = "<group>";
-		};
-		238F91912515400200FE1449 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				238F91922515401700FE1449 /* Promise.swift */,
-			);
-			name = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -127,7 +112,7 @@
 		11581872218DDDF2001491B6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1200;
+				LastUpgradeCheck = 1220;
 				ORGANIZATIONNAME = "Alexander Naumov";
 				TargetAttributes = {
 					1158187A218DDDF2001491B6 = {
@@ -171,7 +156,6 @@
 			files = (
 				238F918E25153FDE00FE1449 /* Store.swift in Sources */,
 				238F918F25153FDE00FE1449 /* Action.swift in Sources */,
-				238F91932515401700FE1449 /* Promise.swift in Sources */,
 				238F918C25153FDE00FE1449 /* Event.swift in Sources */,
 				238F918B25153FDE00FE1449 /* Notification.swift in Sources */,
 			);

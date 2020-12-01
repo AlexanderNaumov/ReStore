@@ -6,8 +6,6 @@
 //  Copyright © 2018 Alexander Naumov. All rights reserved.
 //
 
-import When
-
 public protocol ActionType where Self: Action {}
 
 public class Action: ActionType {
