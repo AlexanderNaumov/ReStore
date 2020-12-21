@@ -9,17 +9,14 @@
 public protocol ActionType where Self: Action {}
 
 public class Action: ActionType {
-    typealias ExecutorContainer = (
-        providerType: Provider.Type?,
-        execute: (Provider?, ExecutorStore, ActionType) -> Void
-    )
+    typealias Executor = (ExecutorStore, ActionType) -> Void
     
     typealias MutatorContainer = (
         stateType: State.Type,
         commit: (ActionType, MutatorStore) throws -> Mutate
     )
     
-    var executor: ExecutorContainer?
+    var executor: Executor?
     var mutator: MutatorContainer?
     let event: AnyEvent
     
@@ -50,38 +47,18 @@ extension ActionValue: AnyActionValue {
 
 extension ActionType {
     @discardableResult
-    public func executor<P: Provider>(_ executor: @escaping (P) -> Void) -> Self {
-        self.executor = (P.self, { p, _, _ in executor(p as! P) })
-        return self
-    }
-    @discardableResult
     public func executor(_ executor: @escaping (ExecutorStore) -> Void) -> Self {
-        self.executor = (nil, { _, s, _ in executor(s) })
+        self.executor =  { s, _ in executor(s) }
         return self
     }
     @discardableResult
     public func executor(_ executor: @escaping (Self) -> Void) -> Self {
-        self.executor = (nil, { _, _, a in executor(a as! Self) })
-        return self
-    }
-    @discardableResult
-    public func executor<P: Provider>(_ executor: @escaping (P, ExecutorStore) -> Void) -> Self {
-        self.executor = (P.self, { p, s, _ in executor(p as! P, s) })
-        return self
-    }
-    @discardableResult
-    public func executor<P: Provider>(_ executor: @escaping (P, Self) -> Void) -> Self {
-        self.executor = (P.self, { p, _, a in executor(p as! P, a as! Self) })
+        self.executor = { _, a in executor(a as! Self) }
         return self
     }
     @discardableResult
     public func executor(_ executor: @escaping (ExecutorStore, Self) -> Void) -> Self {
-        self.executor = (nil, { _, s, a in executor(s, a as! Self) })
-        return self
-    }
-    @discardableResult
-    public func executor<P: Provider>(_ executor: @escaping (P, ExecutorStore, Self) -> Void) -> Self {
-        self.executor = (P.self, { p, s, a in executor(p as! P, s, a as! Self) })
+        self.executor = { s, a in executor(s, a as! Self) }
         return self
     }
 }

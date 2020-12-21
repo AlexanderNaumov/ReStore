@@ -12,14 +12,13 @@ import RxSwift
 public typealias Middleware = (_ store: MutatorStore, _ payload: Any?, _ event: AnyEitherEvent) -> Void
 
 public protocol State {}
-public protocol Provider {}
+
 public protocol ExecutorStore: class {
     func dispatch(_ action: Action)
-    func cancelJob(with type: JobType)
     func state<S: State>() -> StoreState<S>
     func state<S: State>() -> S
     func submitJob<J: ObservableType>(_ job: J, type: JobType, completion: @escaping (RxSwift.Event<J.Element>) -> Void)
-    func removeAllObservers()
+    func cancelJob(with type: JobType)
 }
 
 public protocol MutatorStore: class {
@@ -76,12 +75,10 @@ public final class Store: ExecutorStore, MutatorStore {
     private var stateObservers: [StateObserverContainer] = []
     private let workers = NSMapTable<NSString, AnyObject>.strongToWeakObjects()
     private var middlewares: [Middleware] = []
-    private var providers: [Provider] = []
     
     public func removeAll() {
         states.removeAll()
         middlewares.removeAll()
-        providers.removeAll()
         workers.removeAllObjects()
     }
     
@@ -132,10 +129,6 @@ public final class Store: ExecutorStore, MutatorStore {
         middlewares.append(middleware)
     }
     
-    public func register(provider: Provider) {
-        providers.append(provider)
-    }
-    
     public func submitJob<J: ObservableType>(_ job: J, type: JobType, completion: @escaping (RxSwift.Event<J.Element>) -> Void) {
         let obj = job.subscribe(completion) as AnyObject
         workers.setObject(obj, forKey: type.rawValue as NSString)
@@ -165,10 +158,7 @@ public final class Store: ExecutorStore, MutatorStore {
             }
         }
 
-        if let executor = action.executor {
-            let provider = executor.providerType.flatMap { t in providers.first { type(of: $0) == t } }
-            executor.execute(provider, self, action)
-        }
+        action.executor?(self, action)
 
         let event: AnyEitherEvent
         switch result {
