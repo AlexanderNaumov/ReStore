@@ -1,5 +1,5 @@
 //
-//  Notification.swift
+//  Observers.swift
 //
 //
 //  Created by Alexander Naumov.
@@ -9,7 +9,7 @@
 
 public protocol AnyEventObserver: class {}
 
-class EventObserver<E: Event>: AnyEventObserver {
+final class EventObserver<E: Event>: AnyEventObserver {
     private var callback: ((EitherEvent<E>) -> Void)!
        
     init(_ callback: @escaping (EitherEvent<E>) -> Void) {
@@ -36,7 +36,7 @@ class EventObserver<E: Event>: AnyEventObserver {
 
 protocol AnyStateObserver: class {}
 
-class StateObserver<S: State>: AnyStateObserver {
+final class StateObserver<S: State>: AnyStateObserver {
     private var callback: ((S) -> Void)!
        
     init(_ callback: @escaping (S) -> Void) {

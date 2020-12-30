@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		238F918B25153FDE00FE1449 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F918625153FDE00FE1449 /* Notification.swift */; };
+		238F918B25153FDE00FE1449 /* Observers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F918625153FDE00FE1449 /* Observers.swift */; };
 		238F918C25153FDE00FE1449 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F918725153FDE00FE1449 /* Event.swift */; };
 		238F918D25153FDE00FE1449 /* ReStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 238F918825153FDE00FE1449 /* ReStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		238F918E25153FDE00FE1449 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F918925153FDE00FE1449 /* Store.swift */; };
@@ -18,7 +18,7 @@
 		110A28DC21A6F4F00062CC5A /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = ../magento1_app/Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		1158187B218DDDF2001491B6 /* ReStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ReStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1158187F218DDDF2001491B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		238F918625153FDE00FE1449 /* Notification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Notification.swift; path = Sources/Notification.swift; sourceTree = "<group>"; };
+		238F918625153FDE00FE1449 /* Observers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Observers.swift; path = Sources/Observers.swift; sourceTree = "<group>"; };
 		238F918725153FDE00FE1449 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Event.swift; path = Sources/Event.swift; sourceTree = "<group>"; };
 		238F918825153FDE00FE1449 /* ReStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReStore.h; path = Sources/ReStore.h; sourceTree = "<group>"; };
 		238F918925153FDE00FE1449 /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Store.swift; path = Sources/Store.swift; sourceTree = "<group>"; };
@@ -68,7 +68,7 @@
 				238F918925153FDE00FE1449 /* Store.swift */,
 				238F918A25153FDE00FE1449 /* Action.swift */,
 				238F918725153FDE00FE1449 /* Event.swift */,
-				238F918625153FDE00FE1449 /* Notification.swift */,
+				238F918625153FDE00FE1449 /* Observers.swift */,
 				1158187F218DDDF2001491B6 /* Info.plist */,
 			);
 			name = ReStore;
@@ -157,7 +157,7 @@
 				238F918E25153FDE00FE1449 /* Store.swift in Sources */,
 				238F918F25153FDE00FE1449 /* Action.swift in Sources */,
 				238F918C25153FDE00FE1449 /* Event.swift in Sources */,
-				238F918B25153FDE00FE1449 /* Notification.swift in Sources */,
+				238F918B25153FDE00FE1449 /* Observers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
