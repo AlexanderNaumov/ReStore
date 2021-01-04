@@ -9,32 +9,7 @@
 import Foundation
 import RxSwift
 
-public typealias Middleware = (_ store: MutatorStore, _ payload: Any?, _ event: AnyEitherEvent) -> Void
-
-public protocol State {}
-
-public protocol ExecutorStore: class {
-    func dispatch(_ action: Action)
-    func state<S: State>() -> StoreState<S>
-    func state<S: State>() -> S
-    func submitJob<J: ObservableType>(_ job: J, type: JobType, completion: @escaping (RxSwift.Event<J.Element>) -> Void)
-    func cancelJob(with type: JobType)
-}
-
-public protocol MutatorStore: class {
-    func state<S: State>() -> S
-}
-
-public struct JobType: RawRepresentable {
-    public var rawValue: String
-    public init(rawValue: String) { self.rawValue = rawValue }
-    public static let all = JobType(rawValue: "allWorkers")
-}
-
-public typealias StoreEvent<E> = Observable<EitherEvent<E>>
-public typealias StoreState<S: State> = Observable<S>
-
-public final class Store: Identifiable, ExecutorStore, MutatorStore {
+public final class Store: Identifiable {
     
     public static let `default` = Store(storeType: .default)
     private let storeType: StoreType
@@ -53,33 +28,17 @@ public final class Store: Identifiable, ExecutorStore, MutatorStore {
     
     // State
     
-    private typealias StateObserverContainer = (
-        observer: AnyStateObserver,
-        stateType: State.Type,
-        notify: (State) -> Void
-    )
-    
     private var states: [String: State] = [:]
-    private var stateObservers: [StateObserverContainer] = []
-    
-    private func state(of type: State.Type) -> State {
-        let _type = String(describing: type)
-        switch storeType {
-        case .default:
-            return states[_type]!
-        case .local:
-            return states[_type] ?? Store.default.state(of: type)
-        }
-    }
+    private var stateObservers: [StateObserverType] = []
 
     private func update(state: State, of type: State.Type) {
-        let _type = String(describing: type)
+        let typeStr = String(describing: type)
         switch storeType {
         case .default,
              .local where contains(type):
-            states[_type] = state
+            states[typeStr] = state
         case .local where Store.default.contains(type):
-            Store.default.states[_type] = state
+            Store.default.states[typeStr] = state
         default:
             break
         }
@@ -89,39 +48,36 @@ public final class Store: Identifiable, ExecutorStore, MutatorStore {
         states[String(describing: type)] != nil
     }
     
-    private func notify(state: State) {
-        let t = type(of: state)
+    private func notify(event: AnyEvent) {
         switch storeType {
         case .default,
-             .local where contains(t):
-            stateObservers.filter { $0.stateType == t }.forEach { $0.notify(state) }
-        case .local where Store.default.contains(t):
-            Store.default.stateObservers.filter { $0.stateType == t }.forEach { $0.notify(state) }
+             .local where contains(event.type):
+            stateObservers.filter { $0.type == event.type }.forEach { $0.notify(event: event) }
+        case .local where Store.default.contains(event.type):
+            Store.default.stateObservers.filter { $0.type == event.type }.forEach { $0.notify(event: event) }
         default:
             break
         }
     }
     
-    private func observe<S: State>(_ observer: StateObserver<S>) {
+    private func append<S: State>(observer: StateObserver<S>) {
         switch storeType {
         case .default,
              .local where contains(S.self):
-            stateObservers.append((observer, S.self, { observer.notify(state: $0) }))
-            observer.notify(state: state(of: S.self))
+            stateObservers.append(observer)
         case .local where Store.default.contains(S.self):
-            Store.default.stateObservers.append((observer, S.self, { observer.notify(state: $0) }))
-            observer.notify(state: state(of: S.self))
+            Store.default.stateObservers.append(observer)
         default:
             break
         }
     }
     
-    private func remove(observer: AnyStateObserver) {
-        if case .default = storeType, let index = stateObservers.firstIndex(where: { $0.observer === observer }) {
+    private func remove(observer: StateObserverType) {
+        if case .default = storeType, let index = stateObservers.firstIndex(where: { $0 === observer }) {
             stateObservers.remove(at: index)
-        } else if case .local = storeType, let index = stateObservers.firstIndex(where: { $0.observer === observer }) {
+        } else if case .local = storeType, let index = stateObservers.firstIndex(where: { $0 === observer }) {
             stateObservers.remove(at: index)
-        } else if case .local = storeType, let index = Store.default.stateObservers.firstIndex(where: { $0.observer === observer }) {
+        } else if case .local = storeType, let index = Store.default.stateObservers.firstIndex(where: { $0 === observer }) {
             Store.default.stateObservers.remove(at: index)
         }
     }
@@ -131,15 +87,25 @@ public final class Store: Identifiable, ExecutorStore, MutatorStore {
     }
     
     public func state<S: State>() -> S {
-        return state(of: S.self) as! S
+        let typeStr = String(describing: S.self)
+        switch storeType {
+        case .default:
+            return states[typeStr] as! S
+        case .local:
+            return states[typeStr] as? S ?? Store.default.state()
+        }
     }
     
-    public func state<S: State>() -> StoreState<S> {
-        return Observable.create { [weak self] observer -> Disposable in
-            let observer = StateObserver<S> { state in
-                observer.on(.next(state))
+    public func observe<S: State>() -> Infallible<Event<S>> {
+        return Infallible<Event<S>>.create { [weak self] observer in
+            let observer = StateObserver<S> { e in
+                observer(.next(e))
             }
-            self?.observe(observer)
+            self?.append(observer: observer)
+            if let `self` = self {
+                let state: S = self.state()
+                observer.notify(event: AnyEvent(type: S.self, state: state, payload: nil))
+            }
             return Disposables.create { [weak observer] in
                 guard let observer = observer else { return }
                 self?.remove(observer: observer)
@@ -147,40 +113,33 @@ public final class Store: Identifiable, ExecutorStore, MutatorStore {
         }
     }
     
-    // Event
-    
-    private typealias EventObserverContainer = (
-        observer: AnyEventObserver,
-        eventType: AnyEvent.Type,
-        notify: (AnyEitherEvent) -> Void
-    )
+    // Action
 
-    private lazy var eventObservers: [EventObserverContainer] = []
+    private lazy var actionObservers: [ActionObserver] = []
     
-    private func observe<E: Event>(_ observer: EventObserver<E>) {
-        Store.default.eventObservers.append((observer, E.self, { observer.notify(event: $0) }))
-        notify(event: .e2(.onObserve, observer), eventType: InnerEvent.self, value: nil)
+    private func append(observer: ActionObserver) {
+        Store.default.actionObservers.append(observer)
     }
     
-    private func remove(_ observer: AnyEventObserver) {
-        guard let index = Store.default.eventObservers.firstIndex(where: { $0.observer === observer }) else { return }
-        Store.default.eventObservers.remove(at: index)
+    private func remove(observer: ActionObserver) {
+        guard let index = Store.default.actionObservers.firstIndex(where: { $0 === observer }) else { return }
+        Store.default.actionObservers.remove(at: index)
     }
     
-    private func notify(event: AnyEitherEvent, eventType: AnyEvent.Type, value: Any?) {
-        (eventType == InnerEvent.self ? Store.default.eventObservers : Store.default.eventObservers.filter { $0.eventType == eventType }).forEach { $0.notify(event) }
-        Store.default.middlewares.forEach { $0(self, value, event) }
+    private func notify(type: ActionType.Type) {
+        Store.default.actionObservers.filter { $0.types.contains { $0 == type } }.forEach { $0.notify(type: type) }
     }
     
-    public func event<E: Event>() -> StoreEvent<E> {
-        return Observable<EitherEvent<E>>.create { [weak self] observer in
-            let observer = EventObserver<E> { e in
-                observer.onNext(e)
+    public func didChange(of type: ActionType.Type...) -> Infallible<ActionType.Type> {
+        return Infallible.create { [weak self] observer in
+            let observer = ActionObserver(types: type) { type in
+                observer(.next(type))
             }
-            self?.observe(observer)
+            self?.append(observer: observer)
+            observer.notify(type: OnObserve.self)
             return Disposables.create { [weak observer] in
                 guard let observer = observer else { return }
-                self?.remove(observer)
+                self?.remove(observer: observer)
             }
         }
     }
@@ -197,63 +156,64 @@ public final class Store: Identifiable, ExecutorStore, MutatorStore {
         middlewares.append(middleware)
     }
     
+    func notify(action: ActionType, payload: Any? = nil) {
+        Store.default.middlewares.forEach { $0(action, payload, self) }
+    }
+    
     // Job
     
     private lazy var workers = NSMapTable<NSString, AnyObject>.strongToWeakObjects()
-    
+
     public func submitJob<J: ObservableType>(_ job: J, type: JobType, completion: @escaping (RxSwift.Event<J.Element>) -> Void) {
         let obj = job.subscribe(completion) as AnyObject
         Store.default.workers.setObject(obj, forKey: type.rawValue as NSString)
     }
-    
+
     public func cancelJob(with type: JobType) {
         let jobs = Store.default.workers.dictionaryRepresentation().filter { $0.key as! NSString == type.rawValue as NSString }.values
         jobs.compactMap { $0 as? Disposable }.forEach { $0.dispose() }
-        notify(event: .e2(.cancelTask, type), eventType: InnerEvent.self, value: nil)
+        notify(type: CancelTask.self) // ???
     }
     
     // Dispatch
     
-    public func dispatch(_ action: Action) {
-        var result: Swift.Result<Any?, Error> = .success(nil)
-        
-        if let mutator = action.mutator {
-            do {
-                let mutate = try mutator.commit(action, self)
-                let state: State
-                let payload: Any?
-                switch mutate {
-                case let .state(s):
-                    state = s
-                    payload = nil
-                case let .result(r):
-                    state = r.anyState
-                    payload = r.anyPayload
-                }
-                update(state: state, of: mutator.stateType)
-                notify(state: state)
-                result = .success(payload)
-            } catch {
-                result = .failure(error)
+    public func dispatch<A: Action>(_ action: A) {
+        do {
+            let state: State
+            let payload: Any?
+            switch try action.reduce(store: self) {
+            case let result as AnyResult:
+                state = result.anyState
+                payload = result.anyPayload
+            case let _state as State:
+                state = _state
+                payload = nil
             }
+            let stateType = type(of: state)
+            update(state: state, of: stateType)
+            notify(event: AnyEvent(type: stateType, state: state, payload: payload))
+            notify(type: A.self)
+            notify(action: action, payload: payload)
+        } catch {
+            notify(type: ErrorAction<A>.self)
+            notify(action: ErrorAction<A>(error: error))
         }
-
-        action.executor?(self, action)
-
-        let event: AnyEitherEvent
-        switch result {
-        case let .success(value: value):
-            event = .e1(action.event, value)
-        case let .failure(error: error):
-            event = .e2(.error, error)
-        }
-        
-        notify(event: event, eventType: type(of: action.event), value: (action as? AnyActionValue)?.anyValue)
     }
     
-    public var dispatch: AnyObserver<Action> {
-        return AnyObserver { [weak self] e in
-            guard let self = self, case let .next(action) = e else { return }
+    public func dispatch(_ action: AsyncAction) {
+        action.execute(store: self)
+        notify(type: type(of: action))
+        notify(action: action)
+    }
+    
+    public func dispatch<A: Action>() -> Binder<A> {
+        Binder(self) { `self`, action in
+            self.dispatch(action)
+        }
+    }
+    
+    public func dispatch() -> Binder<AsyncAction> {
+        Binder(self) { `self`, action in
             self.dispatch(action)
         }
     }
@@ -266,8 +226,8 @@ public final class Store: Identifiable, ExecutorStore, MutatorStore {
         workers.removeAllObjects()
     }
     
-    public func removeAllObservers() {
-        eventObservers.removeAll()
+    public func removeObservers() {
         stateObservers.removeAll()
+        actionObservers.removeAll()
     }
 }
