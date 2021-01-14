@@ -11,6 +11,10 @@ public struct EmptyState: State {}
 
 public struct Result<S: State, P>: State {
     public let state: S, payload: P
+    public init(state: S, payload: P) {
+        self.state = state
+        self.payload = payload
+    }
 }
 
 protocol AnyResult {
