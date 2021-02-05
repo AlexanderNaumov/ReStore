@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		11A61CF625CDBA3D0069A982 /* RxSwift.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11A61CF525CDBA3D0069A982 /* RxSwift.xcframework */; };
 		238F918B25153FDE00FE1449 /* Observers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F918625153FDE00FE1449 /* Observers.swift */; };
 		238F918C25153FDE00FE1449 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F918725153FDE00FE1449 /* Event.swift */; };
 		238F918D25153FDE00FE1449 /* ReStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 238F918825153FDE00FE1449 /* ReStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -15,9 +16,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		110A28DC21A6F4F00062CC5A /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = ../magento1_app/Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		1158187B218DDDF2001491B6 /* ReStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ReStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1158187F218DDDF2001491B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		11A61CF525CDBA3D0069A982 /* RxSwift.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = RxSwift.xcframework; path = Carthage/Build/RxSwift.xcframework; sourceTree = "<group>"; };
 		238F918625153FDE00FE1449 /* Observers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Observers.swift; path = Sources/Observers.swift; sourceTree = "<group>"; };
 		238F918725153FDE00FE1449 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Event.swift; path = Sources/Event.swift; sourceTree = "<group>"; };
 		238F918825153FDE00FE1449 /* ReStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReStore.h; path = Sources/ReStore.h; sourceTree = "<group>"; };
@@ -30,6 +31,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11A61CF625CDBA3D0069A982 /* RxSwift.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -39,7 +41,7 @@
 		11467500219216D70034A7FF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				110A28DC21A6F4F00062CC5A /* RxSwift.framework */,
+				11A61CF525CDBA3D0069A982 /* RxSwift.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -298,10 +300,6 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -329,10 +327,6 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
