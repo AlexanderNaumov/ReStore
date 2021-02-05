@@ -218,8 +218,6 @@ public final class Store: ExecutorStore, MutatorStore {
     }
 }
 
-import RxCocoa
-
 public typealias StoreEvent<E> = Observable<Either<E, InnerEvent>>
 
 extension Store {
