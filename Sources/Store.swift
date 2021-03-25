@@ -136,7 +136,9 @@ public final class Store: Identifiable {
                 observer(.next(type))
             }
             self?.append(observer: observer)
-            observer.notify(type: OnObserve.self)
+            if type.contains(where: { $0.eq(OnObserve.self) }) {
+                observer.notify(type: OnObserve.self)
+            }
             return Disposables.create { [weak observer] in
                 guard let observer = observer else { return }
                 self?.remove(observer: observer)
