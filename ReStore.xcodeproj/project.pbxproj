@@ -3,17 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		110DDBEF259FA13400D54119 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110DDBEE259FA13400D54119 /* State.swift */; };
-		110DDBF325A0CC6B00D54119 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110DDBF225A0CC6B00D54119 /* Event.swift */; };
 		110DDBF625A0CCE000D54119 /* Middleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110DDBF525A0CCE000D54119 /* Middleware.swift */; };
-		110DDBF925A0CD3700D54119 /* JobType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110DDBF825A0CD3700D54119 /* JobType.swift */; };
-		11A61CFA25CDBBEB0069A982 /* RxSwift.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11A61CF925CDBBEA0069A982 /* RxSwift.xcframework */; };
-		11D02CED25A10B6300B01E06 /* ActionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11D02CEC25A10B6300B01E06 /* ActionObserver.swift */; };
-		238F918B25153FDE00FE1449 /* StateObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F918625153FDE00FE1449 /* StateObserver.swift */; };
+		11B360B72617802A008B5F45 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B360B62617802A008B5F45 /* Observable.swift */; };
 		238F918D25153FDE00FE1449 /* ReStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 238F918825153FDE00FE1449 /* ReStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		238F918E25153FDE00FE1449 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F918925153FDE00FE1449 /* Store.swift */; };
 		238F918F25153FDE00FE1449 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F918A25153FDE00FE1449 /* Action.swift */; };
@@ -21,14 +17,10 @@
 
 /* Begin PBXFileReference section */
 		110DDBEE259FA13400D54119 /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = State.swift; path = Sources/State.swift; sourceTree = "<group>"; };
-		110DDBF225A0CC6B00D54119 /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Event.swift; path = Sources/Event.swift; sourceTree = "<group>"; };
 		110DDBF525A0CCE000D54119 /* Middleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Middleware.swift; path = Sources/Middleware.swift; sourceTree = "<group>"; };
-		110DDBF825A0CD3700D54119 /* JobType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = JobType.swift; path = Sources/JobType.swift; sourceTree = "<group>"; };
 		1158187B218DDDF2001491B6 /* ReStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ReStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1158187F218DDDF2001491B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		11A61CF925CDBBEA0069A982 /* RxSwift.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = RxSwift.xcframework; path = Carthage/Build/RxSwift.xcframework; sourceTree = "<group>"; };
-		11D02CEC25A10B6300B01E06 /* ActionObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ActionObserver.swift; path = Sources/ActionObserver.swift; sourceTree = "<group>"; };
-		238F918625153FDE00FE1449 /* StateObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StateObserver.swift; path = Sources/StateObserver.swift; sourceTree = "<group>"; };
+		11B360B62617802A008B5F45 /* Observable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Observable.swift; path = Sources/Observable.swift; sourceTree = "<group>"; };
 		238F918825153FDE00FE1449 /* ReStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReStore.h; path = Sources/ReStore.h; sourceTree = "<group>"; };
 		238F918925153FDE00FE1449 /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Store.swift; path = Sources/Store.swift; sourceTree = "<group>"; };
 		238F918A25153FDE00FE1449 /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Action.swift; path = Sources/Action.swift; sourceTree = "<group>"; };
@@ -39,26 +31,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				11A61CFA25CDBBEB0069A982 /* RxSwift.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		11467500219216D70034A7FF /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				11A61CF925CDBBEA0069A982 /* RxSwift.xcframework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		11581871218DDDF2001491B6 = {
 			isa = PBXGroup;
 			children = (
 				238F918125153FA300FE1449 /* ReStore */,
-				11467500219216D70034A7FF /* Frameworks */,
 				1158187C218DDDF2001491B6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -77,12 +59,9 @@
 				238F918825153FDE00FE1449 /* ReStore.h */,
 				238F918925153FDE00FE1449 /* Store.swift */,
 				238F918A25153FDE00FE1449 /* Action.swift */,
-				238F918625153FDE00FE1449 /* StateObserver.swift */,
-				11D02CEC25A10B6300B01E06 /* ActionObserver.swift */,
 				110DDBEE259FA13400D54119 /* State.swift */,
-				110DDBF225A0CC6B00D54119 /* Event.swift */,
+				11B360B62617802A008B5F45 /* Observable.swift */,
 				110DDBF525A0CCE000D54119 /* Middleware.swift */,
-				110DDBF825A0CD3700D54119 /* JobType.swift */,
 				1158187F218DDDF2001491B6 /* Info.plist */,
 			);
 			name = ReStore;
@@ -169,13 +148,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				238F918E25153FDE00FE1449 /* Store.swift in Sources */,
+				11B360B72617802A008B5F45 /* Observable.swift in Sources */,
 				238F918F25153FDE00FE1449 /* Action.swift in Sources */,
-				238F918B25153FDE00FE1449 /* StateObserver.swift in Sources */,
-				110DDBF925A0CD3700D54119 /* JobType.swift in Sources */,
 				110DDBF625A0CCE000D54119 /* Middleware.swift in Sources */,
-				11D02CED25A10B6300B01E06 /* ActionObserver.swift in Sources */,
 				110DDBEF259FA13400D54119 /* State.swift in Sources */,
-				110DDBF325A0CC6B00D54119 /* Event.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

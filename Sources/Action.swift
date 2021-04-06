@@ -9,33 +9,45 @@
 public protocol ActionType {}
 
 extension ActionType {
-    static func eq(_ action: ActionType.Type...) -> Bool {
-        for a in action where a == Self.self { return true }
+    static func eq(_ actions: [ActionType.Type]) -> Bool {
+        for a in actions where a == Self.self { return true }
         return false
     }
 }
 
-public protocol Action: ActionType {
+public protocol AnyAction: ActionType {
+    func _reduce(store: Store) throws -> State
+}
+
+public protocol Action: AnyAction {
     associatedtype S: State
     func reduce(store: Store) throws -> S
 }
 
-extension Action {
-    public func reduce(store: Store) throws -> EmptyState { EmptyState() }
+public extension Action {
+    func _reduce(store: Store) throws -> State {
+        try reduce(store: store)
+    }
 }
 
 public protocol AsyncAction: ActionType {
     func execute(store: Store)
 }
 
-public protocol ErrorActionType {
+public protocol Worker: AnyObject, ActionType {
+    func run(store: Store)
+}
+
+public protocol ErrorType {
     var error: Error { get }
 }
 
-public struct ErrorAction<A: Action>: ErrorActionType, Action {
+public struct ErrorAction<A: ActionType>: ErrorType, ActionType {
     public let error: Error
 }
 
-public struct OnObserve: Action {}
+public struct OnObserve: ActionType {}
 
-public struct CancelTask: Action {}
+public class AllWorkers: Worker {
+    public func run(store: Store) {}
+}

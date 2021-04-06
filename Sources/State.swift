@@ -7,7 +7,6 @@
 //
 
 public protocol State {}
-public struct EmptyState: State {}
 
 public struct Result<S: State, P>: State {
     public let state: S, payload: P
