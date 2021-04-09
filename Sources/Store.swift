@@ -33,12 +33,12 @@ public final class Store: Identifiable {
     }
     
     private func notify(action: ActionType, payload: Any? = nil, state: State? = nil) {
+        if let state = state, let items = observables[.state] as? [(State.Type, AnyObservable)] {
+            items.filter { $0.0 == type(of: state) }.forEach { $0.1.notify((state, payload)) }
+        }
         if let items = observables[.action] as? [([ActionType.Type], AnyObservable)] {
             let actionType = type(of: action)
             items.filter { actionType.eq($0.0) }.forEach { $0.1.notify(actionType) }
-        }
-        if let state = state, let items = observables[.state] as? [(State.Type, AnyObservable)] {
-            items.filter { $0.0 == type(of: state) }.forEach { $0.1.notify((state, payload)) }
         }
         if case .default = storeType {
             Store.default.middlewares.forEach { $0(action, payload, self) }
