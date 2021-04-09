@@ -82,6 +82,15 @@ public final class Store: Identifiable {
         return observable
     }
     
+    public func subscribe(of types: [ActionType.Type], completion: @escaping (ActionType.Type) -> Void) -> Token {
+        let observable = Observable<ActionType.Type>(completion)
+        var observables = self.observables[.action, default: []]
+        observables.append((types, observable))
+        self.observables[.action] = observables
+        if OnObserve.eq(types) { completion(OnObserve.self) }
+        return observable
+    }
+    
     public func unsubscribe(_ token: Token) {
         for (k, _) in self.observables {
             let observables = self.observables[k]!
