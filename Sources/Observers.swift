@@ -7,7 +7,7 @@
 //
 
 
-public protocol AnyEventObserver: class {}
+public protocol AnyEventObserver: AnyObject {}
 
 final class EventObserver<E: Event>: AnyEventObserver {
     private var callback: ((EitherEvent<E>) -> Void)!
@@ -34,7 +34,7 @@ final class EventObserver<E: Event>: AnyEventObserver {
     }
 }
 
-protocol AnyStateObserver: class {}
+protocol AnyStateObserver: AnyObject {}
 
 final class StateObserver<S: State>: AnyStateObserver {
     private var callback: ((S) -> Void)!

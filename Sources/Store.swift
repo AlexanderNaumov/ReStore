@@ -13,7 +13,7 @@ public typealias Middleware = (_ store: MutatorStore, _ payload: Any?, _ event: 
 
 public protocol State {}
 
-public protocol ExecutorStore: class {
+public protocol ExecutorStore: AnyObject {
     func dispatch(_ action: Action)
     func state<S: State>() -> StoreState<S>
     func state<S: State>() -> S
@@ -21,7 +21,7 @@ public protocol ExecutorStore: class {
     func cancelJob(with type: JobType)
 }
 
-public protocol MutatorStore: class {
+public protocol MutatorStore: AnyObject {
     func state<S: State>() -> S
 }
 

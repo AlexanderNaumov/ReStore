@@ -25,7 +25,7 @@ public class Action: ActionType {
     }
 }
 
-protocol AnyActionValue: class {
+protocol AnyActionValue: AnyObject {
     var anyValue: Any { get }
 }
 
