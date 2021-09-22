@@ -8,22 +8,10 @@
 
 public typealias Payload = Any
 
-public final class Store: Identifiable {
+public final class Store {
     
-    public static let `default` = Store(storeType: .default)
-    private let storeType: StoreType
-    
-    private enum StoreType {
-        case `default`, local
-    }
-    
-    private init(storeType: StoreType) {
-        self.storeType = storeType
-    }
-    
-    public init() {
-        storeType = .local
-    }
+    public static let `default` = Store()
+    private init() {}
     
     private var states: [String: State] = [:]
     private var observables: [ObservableType: [(Any, AnyObservable)]] = [:]
@@ -40,9 +28,7 @@ public final class Store: Identifiable {
             let actionType = type(of: action)
             items.filter { actionType.eq($0.0) }.forEach { $0.1.notify(actionType) }
         }
-        if case .default = storeType {
-            Store.default.middlewares.forEach { $0(action, payload, self) }
-        }
+        middlewares.forEach { $0(action, payload, self) }
     }
     
     public func register(state: State) {
@@ -101,10 +87,6 @@ public final class Store: Identifiable {
     private lazy var middlewares: [Middleware] = []
 
     public func register(middleware: @escaping Middleware) {
-        guard case .default = storeType else {
-            print("Store: Local store does not support")
-            return
-        }
         middlewares.append(middleware)
     }
     
