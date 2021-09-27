@@ -9,10 +9,7 @@ let package = Package(
     products: [
         .library(name: "ReStore", targets: ["ReStore"])
     ],
-    dependencies: [
-        .package(url: "https://github.com/ReactiveX/RxSwift.git", .exact("6.0.0"))
-    ],
     targets: [
-        .target(name: "ReStore", dependencies: ["RxSwift", .product(name: "RxRelay", package: "RxSwift")], path: "Sources")
+        .target(name: "ReStore", dependencies: [], path: "Sources")
     ]
 )
