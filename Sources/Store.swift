@@ -139,7 +139,7 @@ public final class Store {
         }
     }
     
-    func setState<S: State>(_ state: S) {
+    public func setState<S: State>(_ state: S) {
         update(state: state)
         if let items = observables[.state] as? [(State.Type, AnyObservable)] {
             items.filter { $0.0 == type(of: state) }.forEach { $0.1.notify((state, Payload?.none)) }
