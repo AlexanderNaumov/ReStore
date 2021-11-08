@@ -6,4 +6,4 @@
 //  Copyright © 2021 Alexander Naumov. All rights reserved.
 //
 
-public typealias Middleware = (_ action: ActionType, _ payload: Any?, _ store: Store) -> Void
+public typealias StoreMiddleware = (_ action: ActionType, _ payload: Any?, _ store: Store) -> Void

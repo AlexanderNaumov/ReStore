@@ -19,12 +19,12 @@ public protocol AnyAction: ActionType {
     func _reduce(store: Store) throws -> State
 }
 
-public protocol Action: AnyAction {
+public protocol ActionR: AnyAction {
     associatedtype S: State
     func reduce(store: Store) throws -> S
 }
 
-public extension Action {
+public extension ActionR {
     func _reduce(store: Store) throws -> State {
         try reduce(store: store)
     }

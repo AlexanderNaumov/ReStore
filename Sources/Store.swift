@@ -84,9 +84,9 @@ public final class Store {
     
     // Middleware
     
-    private lazy var middlewares: [Middleware] = []
+    private lazy var middlewares: [StoreMiddleware] = []
 
-    public func register(middleware: @escaping Middleware) {
+    public func register(middleware: @escaping StoreMiddleware) {
         middlewares.append(middleware)
     }
     
@@ -136,6 +136,13 @@ public final class Store {
             notify(action: action)
         default:
             notify(action: action)
+        }
+    }
+    
+    func setState<S: State>(_ state: S) {
+        update(state: state)
+        if let items = observables[.state] as? [(State.Type, AnyObservable)] {
+            items.filter { $0.0 == type(of: state) }.forEach { $0.1.notify((state, Payload?.none)) }
         }
     }
     
