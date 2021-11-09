@@ -15,7 +15,7 @@ public final class Dispatcher {
         middlewares.append(middleware)
     }
     
-    func dispatch(_ action: Action) {
+    public func dispatch(_ action: Action) {
         var next = { try action.execute() }
         
         let middlewares: [Middleware] = middlewares.reversed()
