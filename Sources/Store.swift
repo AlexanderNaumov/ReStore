@@ -28,7 +28,7 @@ public final class Store {
             let actionType = type(of: action)
             items.filter { actionType.eq($0.0) }.forEach { $0.1.notify(actionType) }
         }
-        middlewares.forEach { $0(action, payload, self) }
+        middlewaresOld.forEach { $0(action, payload, self) }
     }
     
     public func register(state: State) {
@@ -84,10 +84,10 @@ public final class Store {
     
     // Middleware
     
-    private lazy var middlewares: [StoreMiddleware] = []
+    private lazy var middlewaresOld: [StoreMiddleware] = []
 
     public func register(middleware: @escaping StoreMiddleware) {
-        middlewares.append(middleware)
+        middlewaresOld.append(middleware)
     }
     
     // Worker
@@ -150,11 +150,35 @@ public final class Store {
     
     public func removeAll() {
         states.removeAll()
-        middlewares.removeAll()
+        middlewaresOld.removeAll()
         workers.removeAll()
     }
     
     public func removeObservables() {
         observables.removeAll()
+    }
+    
+    //  New
+    
+    private lazy var middlewares: [Middleware] = []
+
+    public func register(middleware: @escaping Middleware) {
+        middlewares.append(middleware)
+    }
+    
+    public func dispatch(_ action: Action) {
+        var next = { try action.execute() }
+        
+        let middlewares: [Middleware] = middlewares.reversed()
+        
+        for i in 0..<middlewares.count {
+            next = { [next = next] in try middlewares[i](action, next) }
+        }
+        
+        do {
+            try next()
+        } catch {
+            print("Unhandled error: \(type(of: error)).\(error)")
+        }
     }
 }

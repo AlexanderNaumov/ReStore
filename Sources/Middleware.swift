@@ -7,3 +7,5 @@
 //
 
 public typealias StoreMiddleware = (_ action: ActionType, _ payload: Any?, _ store: Store) -> Void
+
+public typealias Middleware = (_ action: Action, _ next: () throws -> Void) throws -> Void
